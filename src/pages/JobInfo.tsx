@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -310,14 +309,7 @@ const JobInfo = () => {
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="BA">BA (Base)</SelectItem>
-                                <SelectItem value="BA+30">BA+30</SelectItem>
-                                <SelectItem value="MA">MA</SelectItem>
-                                <SelectItem value="MA+30">MA+30</SelectItem>
-                                <SelectItem value="ED_D_PHD">Earned Doctorate, PhD</SelectItem>
-                                <SelectItem value="COLLEGE_CREDITS">College Credits</SelectItem>
-                                <SelectItem value="PROMOTIONAL_DIFF">Promotional Differential</SelectItem>
-                                <SelectItem value="NBPTS">National Board for Professional Teaching Standards</SelectItem>
+                                <SelectItem value="BA_C1">BA C1</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormDescription>
