@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -310,6 +311,7 @@ const JobInfo = () => {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="BA_C1">BA C1</SelectItem>
+                                <SelectItem value="C1_PD">C1 +PD</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormDescription>
