@@ -50,7 +50,7 @@ const formSchema = z.object({
   hiringDate: z.date({
     required_error: "Date of hire is required.",
   }),
-  educationLevel: z.string(),
+  differential: z.string(),
   certifications: z.string().optional(),
   tenured: z.boolean().default(false),
   additionalNotes: z.string().optional(),
@@ -73,7 +73,7 @@ const JobInfo = () => {
       position: "",
       salaryStep: "",
       yearsOfService: "",
-      educationLevel: "",
+      differential: "",
       certifications: "",
       tenured: false,
       additionalNotes: "",
@@ -299,26 +299,29 @@ const JobInfo = () => {
 
                       <FormField
                         control={form.control}
-                        name="educationLevel"
+                        name="differential"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Education Level</FormLabel>
+                            <FormLabel>Salary Differential</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
-                                  <SelectValue placeholder="Select education level" />
+                                  <SelectValue placeholder="Select differential" />
                                 </SelectTrigger>
                               </FormControl>
                               <SelectContent>
-                                <SelectItem value="BA">Bachelor's Degree</SelectItem>
-                                <SelectItem value="BA+30">BA+30 Credits</SelectItem>
-                                <SelectItem value="MA">Master's Degree</SelectItem>
-                                <SelectItem value="MA+30">MA+30 Credits</SelectItem>
-                                <SelectItem value="doctorate">Doctorate</SelectItem>
+                                <SelectItem value="BA">BA (Base)</SelectItem>
+                                <SelectItem value="BA+30">BA+30</SelectItem>
+                                <SelectItem value="MA">MA</SelectItem>
+                                <SelectItem value="MA+30">MA+30</SelectItem>
+                                <SelectItem value="ED_D_PHD">Earned Doctorate, PhD</SelectItem>
+                                <SelectItem value="COLLEGE_CREDITS">College Credits</SelectItem>
+                                <SelectItem value="PROMOTIONAL_DIFF">Promotional Differential</SelectItem>
+                                <SelectItem value="NBPTS">National Board for Professional Teaching Standards</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormDescription>
-                              Your education level affects your pay scale.
+                              Salary differentials affect your pay scale based on education and credentials.
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
