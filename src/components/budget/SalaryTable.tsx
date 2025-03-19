@@ -21,7 +21,7 @@ const SalaryTable = ({ teacherProfile }: SalaryTableProps) => {
   return (
     <div className="overflow-x-auto border rounded-lg">
       <Table>
-        <TableCaption>UFT Salary Schedule (January 18, 2025)</TableCaption>
+        <TableCaption>UFT Salary Schedule</TableCaption>
         <TableHeader>
           <TableRow>
             <TableHead>Step</TableHead>
