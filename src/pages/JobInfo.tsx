@@ -1,8 +1,9 @@
+
 import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CalendarIcon, BadgeDollarSign, BriefcaseIcon, Calculator, FileText, InfoIcon, ExternalLink } from 'lucide-react';
+import { CalendarIcon, BadgeDollarSign, BriefcaseIcon, Calculator, FileText, InfoIcon, ExternalLink, Plus, Trash2 } from 'lucide-react';
 import { format } from 'date-fns';
 
 import Header from '@/components/Header';
@@ -27,7 +28,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
+import { toast } from '@/components/ui/use-toast';
 
+// Career profile form schema - making required fields
 const formSchema = z.object({
   firstName: z.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -35,25 +38,42 @@ const formSchema = z.object({
   lastName: z.string().min(2, {
     message: "Last name must be at least 2 characters.",
   }),
-  employeeID: z.string().min(4, {
-    message: "Employee ID must be at least 4 characters.",
+  employeeID: z.string().optional(),
+  school: z.string().optional(),
+  position: z.string().min(2, {
+    message: "Position must be at least 2 characters.",
   }),
-  school: z.string().min(2, {
+  salaryStep: z.string({
+    required_error: "Please select a salary step.",
+  }),
+  yearsOfService: z.string({
+    required_error: "Please select years of service.",
+  }),
+  hiringDate: z.date().optional(),
+  differential: z.string({
+    required_error: "Please select a salary differential.",
+  }),
+  certifications: z.string().min(1, {
+    message: "Please enter your certifications.",
+  }),
+  tenured: z.boolean(),
+  additionalNotes: z.string().optional(),
+});
+
+// Employment history entry schema
+const historyEntrySchema = z.object({
+  schoolName: z.string().min(2, {
     message: "School name must be at least 2 characters.",
   }),
   position: z.string().min(2, {
     message: "Position must be at least 2 characters.",
   }),
-  salaryStep: z.string(),
-  yearsOfService: z.string(),
-  hiringDate: z.date({
-    required_error: "Date of hire is required.",
-  }),
-  differential: z.string(),
-  certifications: z.string().optional(),
-  tenured: z.boolean().default(false),
-  additionalNotes: z.string().optional(),
+  yearsOfService: z.string({
+    required_error: "Please select years of service.",
+  })
 });
+
+type HistoryEntry = z.infer<typeof historyEntrySchema>;
 
 const JobInfo = () => {
   useEffect(() => {
@@ -61,7 +81,12 @@ const JobInfo = () => {
   }, []);
 
   const [isSaved, setIsSaved] = useState(false);
+  const [employmentHistory, setEmploymentHistory] = useState<HistoryEntry[]>([]);
+  const [newSchool, setNewSchool] = useState("");
+  const [newPosition, setNewPosition] = useState("");
+  const [newYears, setNewYears] = useState("");
 
+  // Initialize the form with default values
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -81,10 +106,84 @@ const JobInfo = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    // In a real app, this would save to a backend or localStorage
+    // Store values in localStorage for persistence
+    localStorage.setItem('teacherProfile', JSON.stringify(values));
+    
     setIsSaved(true);
+    toast({
+      title: "Profile Saved",
+      description: "Your career profile has been saved successfully."
+    });
+    
     setTimeout(() => setIsSaved(false), 3000);
   }
+
+  const addEmploymentHistory = () => {
+    try {
+      // Validate the new entry
+      const newEntry = historyEntrySchema.parse({
+        schoolName: newSchool,
+        position: newPosition,
+        yearsOfService: newYears
+      });
+      
+      // Add to history
+      setEmploymentHistory([...employmentHistory, newEntry]);
+      
+      // Store in localStorage
+      const updatedHistory = [...employmentHistory, newEntry];
+      localStorage.setItem('employmentHistory', JSON.stringify(updatedHistory));
+      
+      // Reset form fields
+      setNewSchool("");
+      setNewPosition("");
+      setNewYears("");
+      
+      toast({
+        title: "History Added",
+        description: "Employment history entry has been added."
+      });
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        toast({
+          title: "Validation Error",
+          description: "Please fill out all fields correctly.",
+          variant: "destructive"
+        });
+      }
+    }
+  };
+
+  const removeHistoryItem = (index: number) => {
+    const updatedHistory = [...employmentHistory];
+    updatedHistory.splice(index, 1);
+    setEmploymentHistory(updatedHistory);
+    localStorage.setItem('employmentHistory', JSON.stringify(updatedHistory));
+    
+    toast({
+      title: "Entry Removed",
+      description: "Employment history entry has been removed."
+    });
+  };
+
+  // Load stored data on component mount
+  useEffect(() => {
+    const storedProfile = localStorage.getItem('teacherProfile');
+    const storedHistory = localStorage.getItem('employmentHistory');
+    
+    if (storedProfile) {
+      const profileData = JSON.parse(storedProfile);
+      // Convert string date back to Date object if it exists
+      if (profileData.hiringDate) {
+        profileData.hiringDate = new Date(profileData.hiringDate);
+      }
+      form.reset(profileData);
+    }
+    
+    if (storedHistory) {
+      setEmploymentHistory(JSON.parse(storedHistory));
+    }
+  }, [form]);
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -110,6 +209,7 @@ const JobInfo = () => {
                   <CardTitle>Career Profile</CardTitle>
                   <CardDescription>
                     Enter your teaching credentials and employment details to calculate your salary and benefits.
+                    <span className="block mt-2 text-destructive font-medium">* Required fields</span>
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -121,7 +221,7 @@ const JobInfo = () => {
                           name="firstName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>First Name</FormLabel>
+                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">First Name</FormLabel>
                               <FormControl>
                                 <Input placeholder="Enter your first name" {...field} />
                               </FormControl>
@@ -134,7 +234,7 @@ const JobInfo = () => {
                           name="lastName"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Last Name</FormLabel>
+                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Last Name</FormLabel>
                               <FormControl>
                                 <Input placeholder="Enter your last name" {...field} />
                               </FormControl>
@@ -177,7 +277,7 @@ const JobInfo = () => {
                           name="position"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Position</FormLabel>
+                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Position</FormLabel>
                               <FormControl>
                                 <Input placeholder="e.g., Elementary Teacher, Math Teacher" {...field} />
                               </FormControl>
@@ -193,7 +293,7 @@ const JobInfo = () => {
                           name="salaryStep"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Salary Step</FormLabel>
+                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Salary Step</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
@@ -231,7 +331,7 @@ const JobInfo = () => {
                           name="yearsOfService"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel>Years of Service</FormLabel>
+                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Years of Service</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
@@ -301,7 +401,7 @@ const JobInfo = () => {
                         name="differential"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Salary Differential</FormLabel>
+                            <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Salary Differential</FormLabel>
                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                               <FormControl>
                                 <SelectTrigger>
@@ -341,7 +441,7 @@ const JobInfo = () => {
                         name="certifications"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Certifications</FormLabel>
+                            <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Certifications</FormLabel>
                             <FormControl>
                               <Textarea 
                                 placeholder="List any professional certifications (e.g., Special Education, ESL)"
@@ -369,7 +469,7 @@ const JobInfo = () => {
                               />
                             </FormControl>
                             <div className="space-y-1 leading-none">
-                              <FormLabel>
+                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">
                                 I have tenure
                               </FormLabel>
                               <FormDescription>
@@ -419,24 +519,81 @@ const JobInfo = () => {
                     Track your career progression and employment history across schools and positions.
                   </CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-2">
-                  <div className="flex items-center justify-center h-40">
-                    <div className="text-center">
+                <CardContent className="space-y-6">
+                  <div className="border rounded-md p-6">
+                    <h3 className="text-lg font-medium mb-4">Add New Employment History</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                      <div className="space-y-2">
+                        <Label htmlFor="schoolName">School Name</Label>
+                        <Input 
+                          id="schoolName" 
+                          value={newSchool} 
+                          onChange={(e) => setNewSchool(e.target.value)}
+                          placeholder="Enter school name"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="position">Position</Label>
+                        <Input 
+                          id="position" 
+                          value={newPosition} 
+                          onChange={(e) => setNewPosition(e.target.value)}
+                          placeholder="Enter position title"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="yearsOfService">Years of Service</Label>
+                        <Select onValueChange={setNewYears} value={newYears}>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select years" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {Array.from({ length: 31 }, (_, i) => i).map((year) => (
+                              <SelectItem key={year} value={year.toString()}>
+                                {year} {year === 1 ? 'year' : 'years'}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                    <Button onClick={addEmploymentHistory} className="w-full">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Add to History
+                    </Button>
+                  </div>
+                  
+                  {employmentHistory.length > 0 ? (
+                    <div className="space-y-4">
+                      <h3 className="text-lg font-medium">Your Employment History</h3>
+                      <div className="border rounded-md divide-y">
+                        {employmentHistory.map((entry, index) => (
+                          <div key={index} className="p-4 flex justify-between items-center">
+                            <div>
+                              <h4 className="font-medium">{entry.schoolName}</h4>
+                              <p className="text-sm text-muted-foreground">{entry.position} • {entry.yearsOfService} {parseInt(entry.yearsOfService) === 1 ? 'year' : 'years'}</p>
+                            </div>
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              onClick={() => removeHistoryItem(index)}
+                              className="text-destructive hover:text-destructive/90 hover:bg-destructive/10"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center p-6 border border-dashed rounded-md">
                       <FileText className="mx-auto h-10 w-10 text-muted-foreground/60 mb-2" />
-                      <p className="text-lg text-muted-foreground">
-                        Employment history section coming soon...
+                      <p className="text-muted-foreground">
+                        No employment history entries yet. Add your first position above.
                       </p>
                     </div>
-                  </div>
+                  )}
                 </CardContent>
-                <CardFooter>
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                      <InfoIcon className="h-4 w-4" />
-                      <p>This section will allow you to track your career progression.</p>
-                    </div>
-                  </div>
-                </CardFooter>
               </Card>
             </TabsContent>
           </Tabs>
