@@ -2,6 +2,8 @@
 import { useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { AlertTriangle } from "lucide-react";
 
 const TaxEstimate = () => {
   useEffect(() => {
@@ -17,6 +19,16 @@ const TaxEstimate = () => {
           <p className="text-lg text-foreground/80 mb-8">
             Get a clearer picture of your tax obligations with calculators designed for NYC teachers.
           </p>
+          
+          <Alert variant="destructive" className="mb-8">
+            <AlertTriangle className="h-4 w-4" />
+            <AlertTitle>Important Disclaimer</AlertTitle>
+            <AlertDescription>
+              We are not tax specialists. The estimates provided are for informational purposes only. 
+              For tax advice specific to your situation, please consult with a qualified accountant 
+              or tax specialist.
+            </AlertDescription>
+          </Alert>
           
           <div className="glass-card p-8 mb-8">
             <p className="text-center text-lg text-foreground/60">

@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CalendarIcon, BadgeDollarSign, BriefcaseIcon, Calculator, FileText, InfoIcon } from 'lucide-react';
+import { CalendarIcon, BadgeDollarSign, BriefcaseIcon, Calculator, FileText, InfoIcon, ExternalLink } from 'lucide-react';
 import { format } from 'date-fns';
 
 import Header from '@/components/Header';
@@ -312,10 +311,25 @@ const JobInfo = () => {
                               <SelectContent>
                                 <SelectItem value="BA_C1">BA C1</SelectItem>
                                 <SelectItem value="C1_PD">C1 +PD</SelectItem>
+                                <SelectItem value="BA30_C2">BA+30 or C2</SelectItem>
+                                <SelectItem value="C2_ID">C2+ID</SelectItem>
+                                <SelectItem value="MA_C2_PD">MA or C2 + PD</SelectItem>
+                                <SelectItem value="C2_ID_PD">C2 + ID + PD</SelectItem>
+                                <SelectItem value="C6">C6</SelectItem>
+                                <SelectItem value="MA30_C6_PD">MA + 30 or C6 + PD</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormDescription>
-                              Salary differentials affect your pay scale based on education and credentials.
+                              Salary differentials affect your pay scale based on education and credentials.{" "}
+                              <a 
+                                href="https://www.uft.org/your-rights/salary/salary-differentials" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-primary inline-flex items-center hover:underline"
+                              >
+                                Learn more about salary differentials
+                                <ExternalLink className="ml-1 h-3 w-3" />
+                              </a>
                             </FormDescription>
                             <FormMessage />
                           </FormItem>
