@@ -410,13 +410,13 @@ const JobInfo = () => {
                               </FormControl>
                               <SelectContent>
                                 <SelectItem value="BA_C1">BA C1</SelectItem>
-                                <SelectItem value="C1_PD">C1 +PD</SelectItem>
+                                <SelectItem value="C1_PD">C1+PD</SelectItem>
                                 <SelectItem value="BA30_C2">BA+30 or C2</SelectItem>
                                 <SelectItem value="C2_ID">C2+ID</SelectItem>
-                                <SelectItem value="MA_C2_PD">MA or C2 + PD</SelectItem>
-                                <SelectItem value="C2_ID_PD">C2 + ID + PD</SelectItem>
+                                <SelectItem value="MA_C2_PD">MA or C2+PD</SelectItem>
+                                <SelectItem value="C2_ID_PD">C2+ID+PD</SelectItem>
                                 <SelectItem value="C6">C6</SelectItem>
-                                <SelectItem value="MA30_C6_PD">MA + 30 or C6 + PD</SelectItem>
+                                <SelectItem value="MA30_C6_PD">MA+30 or C6+PD</SelectItem>
                               </SelectContent>
                             </Select>
                             <FormDescription>
