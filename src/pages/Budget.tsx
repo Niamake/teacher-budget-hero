@@ -8,11 +8,21 @@ import { BadgeDollarSign, Calculator, Link as LinkIcon, ExternalLink, ChevronRig
 import { useNavigate } from 'react-router-dom';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { InfoIcon } from "lucide-react";
+import { 
+  Table,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 // Define salary ranges based on step and differential
 // Source: UFT salary schedule (https://www.uft.org/your-rights/salary/doe-and-city-salary-schedules/teacher-salary-schedule)
+// Updated to January 18, 2025 values
 const salaryData = {
-  // BA (C1)
+  // 1) BA C1 (Column 1)
   BA_C1: {
     "1A": 61491, "1B": 61491, 
     "2A": 62301, "2B": 65104,
@@ -23,7 +33,7 @@ const salaryData = {
     "7A": 73643, "7B": 79749,
     "8A": 87748, "8B": 94915
   },
-  // C1 + PD
+  // 2) C1 + PD (Column 2)
   C1_PD: {
     "1A": 68510, "1B": 68510, 
     "2A": 69320, "2B": 72123,
@@ -34,7 +44,7 @@ const salaryData = {
     "7A": 80662, "7B": 86768,
     "8A": 94767, "8B": 101934
   },
-  // BA + 30 (C2)
+  // 3) BA + 30 or C2 (Column 3)
   BA30_C2: {
     "1A": 65548, "1B": 65548, 
     "2A": 66358, "2B": 69161,
@@ -45,7 +55,7 @@ const salaryData = {
     "7A": 77700, "7B": 83806,
     "8A": 91805, "8B": 98972
   },
-  // C2 + ID
+  // 4) C2 + ID (Column 4)
   C2_ID: {
     "1A": 66824, "1B": 66824, 
     "2A": 67634, "2B": 70437,
@@ -56,7 +66,7 @@ const salaryData = {
     "7A": 78976, "7B": 85082,
     "8A": 93081, "8B": 100248
   },
-  // MA (C2 + PD)
+  // 5) MA or C2 + PD (Column 5)
   MA_C2_PD: {
     "1A": 72567, "1B": 72567, 
     "2A": 73377, "2B": 76180,
@@ -67,7 +77,7 @@ const salaryData = {
     "7A": 84719, "7B": 90825,
     "8A": 98824, "8B": 105991
   },
-  // C2 + ID + PD
+  // 6) C2 + ID + PD (Column 6)
   C2_ID_PD: {
     "1A": 73843, "1B": 73843, 
     "2A": 74653, "2B": 77456,
@@ -78,7 +88,7 @@ const salaryData = {
     "7A": 85995, "7B": 92101,
     "8A": 100100, "8B": 107267
   },
-  // C6
+  // 7) C6 (Column 7)
   C6: {
     "1A": 72869, "1B": 72869, 
     "2A": 73679, "2B": 76482,
@@ -89,7 +99,7 @@ const salaryData = {
     "7A": 85021, "7B": 91127,
     "8A": 99126, "8B": 106293
   },
-  // MA + 30 (C6 + PD)
+  // 8) MA + 30 or C6 + PD (Column 8)
   MA30_C6_PD: {
     "1A": 79888, "1B": 79888, 
     "2A": 80698, "2B": 83501,
@@ -106,6 +116,7 @@ const Budget = () => {
   const navigate = useNavigate();
   const [teacherProfile, setTeacherProfile] = useState<any>(null);
   const [estimatedSalary, setEstimatedSalary] = useState<number | null>(null);
+  const [showSalaryTable, setShowSalaryTable] = useState<boolean>(false);
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -142,6 +153,26 @@ const Budget = () => {
       minimumFractionDigits: 0,
       maximumFractionDigits: 0,
     }).format(amount);
+  };
+
+  // Toggle salary table visibility
+  const toggleSalaryTable = () => {
+    setShowSalaryTable(!showSalaryTable);
+  };
+
+  // Helper function to get the differential name for display
+  const getDifferentialName = (differentialCode: string): string => {
+    switch (differentialCode) {
+      case "BA_C1": return "BA C1";
+      case "C1_PD": return "C1 +PD";
+      case "BA30_C2": return "BA+30 or C2";
+      case "C2_ID": return "C2+ID";
+      case "MA_C2_PD": return "MA or C2 + PD";
+      case "C2_ID_PD": return "C2 + ID + PD";
+      case "C6": return "C6";
+      case "MA30_C6_PD": return "MA + 30 or C6 + PD";
+      default: return differentialCode;
+    }
   };
 
   return (
@@ -182,7 +213,7 @@ const Budget = () => {
                 <CardHeader>
                   <CardTitle>Estimated Salary</CardTitle>
                   <CardDescription>
-                    Based on your job profile, tenure, and the current UFT salary schedule.
+                    Based on your job profile, tenure, and the current UFT salary schedule (January 18, 2025).
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
@@ -212,32 +243,68 @@ const Budget = () => {
                             <li>Salary Step: <span className="font-medium">{teacherProfile.salaryStep}</span></li>
                             <li>
                               Salary Differential: <span className="font-medium">
-                                {teacherProfile.differential === "BA_C1" ? "BA C1" : 
-                                 teacherProfile.differential === "C1_PD" ? "C1 +PD" : 
-                                 teacherProfile.differential === "BA30_C2" ? "BA+30 or C2" :
-                                 teacherProfile.differential === "C2_ID" ? "C2+ID" :
-                                 teacherProfile.differential === "MA_C2_PD" ? "MA or C2 + PD" :
-                                 teacherProfile.differential === "C2_ID_PD" ? "C2 + ID + PD" :
-                                 teacherProfile.differential === "C6" ? "C6" :
-                                 teacherProfile.differential === "MA30_C6_PD" ? "MA + 30 or C6 + PD" :
-                                 teacherProfile.differential}
+                                {getDifferentialName(teacherProfile.differential)}
                               </span>
                             </li>
                             <li>Years of Service: <span className="font-medium">{teacherProfile.yearsOfService}</span></li>
                           </ul>
-                          <p className="mt-3 text-sm">
+                          <div className="mt-3 flex items-center">
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={toggleSalaryTable} 
+                              className="mr-3"
+                            >
+                              {showSalaryTable ? "Hide Salary Table" : "View Salary Table"}
+                            </Button>
                             <a 
                               href="https://www.uft.org/your-rights/salary/doe-and-city-salary-schedules/teacher-salary-schedule" 
                               target="_blank" 
                               rel="noopener noreferrer"
-                              className="text-primary inline-flex items-center hover:underline"
+                              className="text-primary inline-flex items-center hover:underline text-sm"
                             >
                               View the full UFT salary schedule
                               <ExternalLink className="ml-1 h-3 w-3" />
                             </a>
-                          </p>
+                          </div>
                         </AlertDescription>
                       </Alert>
+
+                      {showSalaryTable && (
+                        <div className="overflow-x-auto border rounded-lg">
+                          <Table>
+                            <TableCaption>UFT Salary Schedule (January 18, 2025)</TableCaption>
+                            <TableHeader>
+                              <TableRow>
+                                <TableHead>Step</TableHead>
+                                <TableHead>BA C1</TableHead>
+                                <TableHead>C1 +PD</TableHead>
+                                <TableHead>BA+30/C2</TableHead>
+                                <TableHead>C2+ID</TableHead>
+                                <TableHead>MA/C2+PD</TableHead>
+                                <TableHead>C2+ID+PD</TableHead>
+                                <TableHead>C6</TableHead>
+                                <TableHead>MA+30/C6+PD</TableHead>
+                              </TableRow>
+                            </TableHeader>
+                            <TableBody>
+                              {Object.keys(salaryData.BA_C1).map((step) => (
+                                <TableRow key={step} className={teacherProfile.salaryStep === step ? "bg-primary/10" : ""}>
+                                  <TableCell className="font-medium">{step}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.BA_C1[step])}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.C1_PD[step])}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.BA30_C2[step])}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.C2_ID[step])}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.MA_C2_PD[step])}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.C2_ID_PD[step])}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.C6[step])}</TableCell>
+                                  <TableCell>{formatCurrency(salaryData.MA30_C6_PD[step])}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          </Table>
+                        </div>
+                      )}
                       
                       <div className="text-sm text-muted-foreground">
                         <p>
