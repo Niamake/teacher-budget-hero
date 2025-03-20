@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -30,7 +29,6 @@ import {
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
 
-// Career profile form schema - making required fields
 const formSchema = z.object({
   firstName: z.string().min(2, {
     message: "First name must be at least 2 characters.",
@@ -60,7 +58,6 @@ const formSchema = z.object({
   additionalNotes: z.string().optional(),
 });
 
-// Employment history entry schema
 const historyEntrySchema = z.object({
   schoolName: z.string().min(2, {
     message: "School name must be at least 2 characters.",
@@ -86,7 +83,6 @@ const JobInfo = () => {
   const [newPosition, setNewPosition] = useState("");
   const [newYears, setNewYears] = useState("");
 
-  // Initialize the form with default values
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -106,7 +102,6 @@ const JobInfo = () => {
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
-    // Store values in localStorage for persistence
     localStorage.setItem('teacherProfile', JSON.stringify(values));
     
     setIsSaved(true);
@@ -120,21 +115,17 @@ const JobInfo = () => {
 
   const addEmploymentHistory = () => {
     try {
-      // Validate the new entry
       const newEntry = historyEntrySchema.parse({
         schoolName: newSchool,
         position: newPosition,
         yearsOfService: newYears
       });
       
-      // Add to history
       setEmploymentHistory([...employmentHistory, newEntry]);
       
-      // Store in localStorage
       const updatedHistory = [...employmentHistory, newEntry];
       localStorage.setItem('employmentHistory', JSON.stringify(updatedHistory));
       
-      // Reset form fields
       setNewSchool("");
       setNewPosition("");
       setNewYears("");
@@ -166,14 +157,12 @@ const JobInfo = () => {
     });
   };
 
-  // Load stored data on component mount
   useEffect(() => {
     const storedProfile = localStorage.getItem('teacherProfile');
     const storedHistory = localStorage.getItem('employmentHistory');
     
     if (storedProfile) {
       const profileData = JSON.parse(storedProfile);
-      // Convert string date back to Date object if it exists
       if (profileData.hiringDate) {
         profileData.hiringDate = new Date(profileData.hiringDate);
       }
@@ -331,7 +320,7 @@ const JobInfo = () => {
                           name="yearsOfService"
                           render={({ field }) => (
                             <FormItem>
-                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Years of Service</FormLabel>
+                              <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Years of Service at DOE</FormLabel>
                               <Select onValueChange={field.onChange} defaultValue={field.value}>
                                 <FormControl>
                                   <SelectTrigger>
@@ -346,6 +335,9 @@ const JobInfo = () => {
                                   ))}
                                 </SelectContent>
                               </Select>
+                              <FormDescription>
+                                Years working at NYC DOE specifically. This determines longevity pay increases.
+                              </FormDescription>
                               <FormMessage />
                             </FormItem>
                           )}
