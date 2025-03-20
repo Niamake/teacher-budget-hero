@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,29 +25,22 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
   const [nextSchedule, setNextSchedule] = useState(getNextSalarySchedule());
   const [yearsAtDOE, setYearsAtDOE] = useState<number>(0);
   
-  // Calculate salary based on profile
   useEffect(() => {
     if (teacherProfile?.salaryStep && teacherProfile?.differential) {
       const differential = teacherProfile.differential;
       const step = teacherProfile.salaryStep;
       const yearsService = parseInt(teacherProfile.yearsOfService || '0');
       
-      // Set years at DOE for longevity calculations
       setYearsAtDOE(yearsService);
       
-      // Calculate salary with longevity if eligible
       const salary = calculateSalaryWithLongevity(step, differential, yearsService);
       setEstimatedSalary(salary);
     }
   }, [teacherProfile]);
 
-  // Calculate monthly salary (annual / 12)
   const monthlyEstimate = estimatedSalary ? Math.round(estimatedSalary / 12) : null;
-
-  // Calculate semi-monthly salary (annual / 24) - NYC DOE pays twice a month
   const semiMonthlyEstimate = estimatedSalary ? Math.round(estimatedSalary / 24) : null;
 
-  // Toggle salary table visibility
   const toggleSalaryTable = () => {
     setShowSalaryTable(!showSalaryTable);
   };
@@ -104,7 +96,7 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
                   <div className="mt-3 p-2 bg-primary/10 rounded-md flex items-center text-sm">
                     <CalendarIcon className="h-4 w-4 mr-2 flex-shrink-0" />
                     <p>
-                      <span className="font-medium">Upcoming Salary Increase:</span> The next salary schedule takes effect on {nextSchedule.effectiveDate.toLocaleDateString()} ({nextSchedule.description})
+                      <span className="font-medium">Upcoming Salary Increase:</span> {nextSchedule.description} taking effect on {nextSchedule.effectiveDate.toLocaleDateString()} - {nextSchedule.percentIncrease}% increase
                     </p>
                   </div>
                 )}
