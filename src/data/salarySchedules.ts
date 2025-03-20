@@ -20,6 +20,7 @@ interface SalaryDifferential {
 interface SalarySchedule {
   effectiveDate: Date;
   description: string;
+  percentIncrease?: string; // Add the missing property as optional
   differentials: SalaryDifferential;
   longevityAmounts: {
     L5: number;

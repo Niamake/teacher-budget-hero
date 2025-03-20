@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -37,6 +38,12 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
       setEstimatedSalary(salary);
     }
   }, [teacherProfile]);
+
+  // Extract percent increase from description for display
+  const getPercentIncrease = (description: string) => {
+    const match = description.match(/\((\d+(?:\.\d+)?)%\s+increase\)/);
+    return match ? match[1] + "%" : "";
+  };
 
   const monthlyEstimate = estimatedSalary ? Math.round(estimatedSalary / 12) : null;
   const semiMonthlyEstimate = estimatedSalary ? Math.round(estimatedSalary / 24) : null;
@@ -93,10 +100,13 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
                 </ul>
                 
                 {nextSchedule && (
-                  <div className="mt-3 p-2 bg-primary/10 rounded-md flex items-center text-sm">
-                    <CalendarIcon className="h-4 w-4 mr-2 flex-shrink-0" />
-                    <p>
-                      <span className="font-medium">Upcoming Salary Increase:</span> {nextSchedule.description} taking effect on {nextSchedule.effectiveDate.toLocaleDateString()} - {nextSchedule.percentIncrease}% increase
+                  <div className="mt-3 p-2 bg-primary/10 rounded-md text-sm">
+                    <div className="flex items-center">
+                      <CalendarIcon className="h-4 w-4 mr-2 flex-shrink-0" />
+                      <p className="font-medium">Upcoming Salary Increase:</p>
+                    </div>
+                    <p className="mt-1 ml-6">
+                      {nextSchedule.description} taking effect on {nextSchedule.effectiveDate.toLocaleDateString()} - {getPercentIncrease(nextSchedule.description)} increase
                     </p>
                   </div>
                 )}
