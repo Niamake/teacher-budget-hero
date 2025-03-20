@@ -3,18 +3,30 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { Wallet, Percent, AlertCircle, Calculator, TrendingUp, Info } from "lucide-react";
+import { Wallet, Percent, AlertCircle, Calculator, TrendingUp, Info, Save } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from "recharts";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { ChartContainer } from "@/components/ui/chart";
+import { Card as ProjectionCard } from "@/components/ui/card";
 
-const RothIRASection = () => {
-  const [currentBalance, setCurrentBalance] = useState("");
-  const [annualContribution, setAnnualContribution] = useState("");
-  const [returnRate, setReturnRate] = useState(8); // Default 8% (middle of 7-10% range)
+interface RothIRASectionProps {
+  savedData?: {
+    currentBalance: string;
+    annualContribution: string;
+    returnRate: number;
+  };
+  onSave?: (data: { currentBalance: string; annualContribution: string; returnRate: number }) => void;
+}
+
+const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
+  const [currentBalance, setCurrentBalance] = useState(savedData?.currentBalance || "");
+  const [annualContribution, setAnnualContribution] = useState(savedData?.annualContribution || "");
+  const [returnRate, setReturnRate] = useState(savedData?.returnRate || 8); // Default 8%
   const [projectionData, setProjectionData] = useState<any[]>([]);
+  const [hasChanges, setHasChanges] = useState(false);
   const contributionLimit = 7000;
   
   useEffect(() => {
@@ -45,6 +57,19 @@ const RothIRASection = () => {
     }
   }, [currentBalance, annualContribution, returnRate]);
   
+  // Track changes to enable save button
+  useEffect(() => {
+    if (savedData) {
+      setHasChanges(
+        currentBalance !== savedData.currentBalance || 
+        annualContribution !== savedData.annualContribution ||
+        returnRate !== savedData.returnRate
+      );
+    } else {
+      setHasChanges(currentBalance !== "" || annualContribution !== "" || returnRate !== 8);
+    }
+  }, [currentBalance, annualContribution, returnRate, savedData]);
+  
   // Format currency for display
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -54,13 +79,48 @@ const RothIRASection = () => {
     }).format(value);
   };
   
+  const handleSave = () => {
+    if (onSave) {
+      onSave({
+        currentBalance,
+        annualContribution,
+        returnRate
+      });
+      setHasChanges(false);
+    }
+  };
+
+  // Get milestone data points for projection highlights
+  const getMilestoneData = () => {
+    const milestones = [5, 10, 20, 30, 40];
+    return milestones.map(year => {
+      const dataPoint = projectionData[year];
+      return dataPoint ? {
+        year,
+        balance: dataPoint.balance,
+        formattedBalance: dataPoint.formattedBalance
+      } : null;
+    }).filter(Boolean);
+  };
+  
   return (
     <div className="space-y-6">
       <Card>
         <CardHeader>
-          <div className="flex items-center gap-2">
-            <Wallet className="h-6 w-6 text-primary" />
-            <CardTitle>Roth IRA</CardTitle>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <Wallet className="h-6 w-6 text-primary" />
+              <CardTitle>Roth IRA</CardTitle>
+            </div>
+            {hasChanges && onSave && (
+              <Button 
+                size="sm" 
+                onClick={handleSave}
+                className="flex items-center gap-1"
+              >
+                <Save className="h-4 w-4" /> Save Changes
+              </Button>
+            )}
           </div>
           <CardDescription>
             A Roth IRA allows you to contribute after-tax dollars and withdraw the money tax-free in retirement, providing tax diversification for your retirement portfolio.
@@ -142,7 +202,7 @@ const RothIRASection = () => {
           </div>
           
           {(Number(currentBalance) > 0 || Number(annualContribution) > 0) && (
-            <div className="mt-8 space-y-4">
+            <div className="mt-8 space-y-6">
               <div className="flex items-center mb-2 gap-2">
                 <TrendingUp className="h-5 w-5 text-primary" />
                 <h3 className="text-lg font-medium">Projected Roth IRA Growth</h3>
@@ -175,7 +235,19 @@ const RothIRASection = () => {
                 </Alert>
               </div>
               
-              <div className="h-[300px] w-full mt-6">
+              {/* Key Projection Milestones at the top */}
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-3 mb-4">
+                {getMilestoneData().map((milestone) => (
+                  <ProjectionCard key={milestone.year} className="bg-muted/30">
+                    <CardContent className="p-3 text-center">
+                      <p className="text-xs text-muted-foreground">Year {milestone.year}</p>
+                      <p className="text-primary font-bold">{milestone.formattedBalance}</p>
+                    </CardContent>
+                  </ProjectionCard>
+                ))}
+              </div>
+              
+              <div className="h-[300px] w-full">
                 <ChartContainer
                   config={{
                     balance: {
@@ -226,7 +298,7 @@ const RothIRASection = () => {
               </div>
               
               <div className="mt-4">
-                <h4 className="text-sm font-medium mb-3">Key Projection Milestones</h4>
+                <h4 className="text-sm font-medium mb-3">Detailed Projection Table</h4>
                 <Table>
                   <TableHeader>
                     <TableRow>

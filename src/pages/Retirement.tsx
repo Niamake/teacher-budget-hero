@@ -7,13 +7,53 @@ import QPPSection from '@/components/retirement/QPPSection';
 import TDASection from '@/components/retirement/TDASection';
 import DeferredCompSection from '@/components/retirement/DeferredCompSection';
 import RothIRASection from '@/components/retirement/RothIRASection';
+import { toast } from "sonner";
+
+// Define types for our retirement data
+export interface RetirementAccountData {
+  tdaData?: {
+    currentBalance: string;
+    annualContribution: string;
+  };
+  deferredCompData?: {
+    currentBalance: string;
+    annualContribution: string;
+    returnRate: number;
+  };
+  rothIraData?: {
+    currentBalance: string;
+    annualContribution: string;
+    returnRate: number;
+  };
+}
 
 const Retirement = () => {
   const [activeTab, setActiveTab] = useState("qpp");
+  const [retirementData, setRetirementData] = useState<RetirementAccountData>({});
   
+  // Load saved data from localStorage on initial render
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    const savedData = localStorage.getItem('retirementData');
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        setRetirementData(parsedData);
+        toast.success("Loaded your saved retirement data");
+      } catch (error) {
+        console.error("Failed to parse saved retirement data:", error);
+      }
+    }
   }, []);
+
+  // Save updated data to localStorage
+  const saveRetirementData = (data: RetirementAccountData) => {
+    const updatedData = { ...retirementData, ...data };
+    setRetirementData(updatedData);
+    localStorage.setItem('retirementData', JSON.stringify(updatedData));
+    toast.success("Saved your retirement data");
+  };
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -38,15 +78,24 @@ const Retirement = () => {
             </TabsContent>
             
             <TabsContent value="tda" className="mt-6">
-              <TDASection />
+              <TDASection 
+                savedData={retirementData.tdaData}
+                onSave={(data) => saveRetirementData({ tdaData: data })}
+              />
             </TabsContent>
             
             <TabsContent value="457b" className="mt-6">
-              <DeferredCompSection />
+              <DeferredCompSection 
+                savedData={retirementData.deferredCompData}
+                onSave={(data) => saveRetirementData({ deferredCompData: data })}
+              />
             </TabsContent>
             
             <TabsContent value="roth" className="mt-6">
-              <RothIRASection />
+              <RothIRASection 
+                savedData={retirementData.rothIraData}
+                onSave={(data) => saveRetirementData({ rothIraData: data })}
+              />
             </TabsContent>
           </Tabs>
         </div>
