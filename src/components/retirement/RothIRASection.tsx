@@ -2,14 +2,57 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Wallet, Percent, AlertCircle, Calculator } from "lucide-react";
+import { Slider } from "@/components/ui/slider";
+import { useState, useEffect } from "react";
+import { Wallet, Percent, AlertCircle, Calculator, TrendingUp, Info } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { ChartContainer } from "@/components/ui/chart";
 
 const RothIRASection = () => {
   const [currentBalance, setCurrentBalance] = useState("");
   const [annualContribution, setAnnualContribution] = useState("");
+  const [returnRate, setReturnRate] = useState(8); // Default 8% (middle of 7-10% range)
+  const [projectionData, setProjectionData] = useState<any[]>([]);
   const contributionLimit = 7000;
+  
+  useEffect(() => {
+    // Calculate projection data whenever inputs change
+    if (currentBalance || annualContribution || returnRate) {
+      const startingBalance = Number(currentBalance) || 0;
+      const yearlyContribution = Number(annualContribution) || 0;
+      const rate = returnRate / 100; // Convert percentage to decimal
+      const projectionYears = 50;
+      
+      const data = [];
+      let balance = startingBalance;
+      
+      for (let year = 0; year <= projectionYears; year++) {
+        if (year > 0) {
+          // Add yearly contribution and apply continuous compounding growth
+          balance = (balance + yearlyContribution) * Math.exp(rate);
+        }
+        
+        data.push({
+          year: year,
+          balance: Math.round(balance),
+          formattedBalance: formatCurrency(Math.round(balance))
+        });
+      }
+      
+      setProjectionData(data);
+    }
+  }, [currentBalance, annualContribution, returnRate]);
+  
+  // Format currency for display
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      maximumFractionDigits: 0,
+    }).format(value);
+  };
   
   return (
     <div className="space-y-6">
@@ -97,10 +140,136 @@ const RothIRASection = () => {
               </div>
             </div>
           </div>
+          
+          {(Number(currentBalance) > 0 || Number(annualContribution) > 0) && (
+            <div className="mt-8 space-y-4">
+              <div className="flex items-center mb-2 gap-2">
+                <TrendingUp className="h-5 w-5 text-primary" />
+                <h3 className="text-lg font-medium">Projected Roth IRA Growth</h3>
+              </div>
+              
+              <div className="space-y-4">
+                <div className="bg-muted/30 p-4 rounded-lg">
+                  <Label htmlFor="roth-return-rate" className="mb-2 block">
+                    Expected Annual Return Rate: <span className="font-medium text-primary">{returnRate}%</span>
+                  </Label>
+                  <Slider 
+                    id="roth-return-rate"
+                    min={1} 
+                    max={15} 
+                    step={0.5}
+                    value={[returnRate]} 
+                    onValueChange={(value) => setReturnRate(value[0])}
+                    className="py-4"
+                  />
+                  <p className="text-xs text-muted-foreground mt-2">
+                    The S&P 500 has historically averaged 7-10% annual returns over the long term. Adjust this value to model different market scenarios.
+                  </p>
+                </div>
+              
+                <Alert className="bg-muted/50">
+                  <Info className="h-4 w-4" />
+                  <AlertDescription className="text-xs">
+                    This projection uses continuous compounding to model market returns. Past performance does not guarantee future results. Remember that Roth IRA withdrawals are tax-free in retirement, which may make this account particularly valuable.
+                  </AlertDescription>
+                </Alert>
+              </div>
+              
+              <div className="h-[300px] w-full mt-6">
+                <ChartContainer
+                  config={{
+                    balance: {
+                      theme: {
+                        light: "rgb(var(--primary))",
+                        dark: "rgb(var(--primary))",
+                      },
+                    },
+                  }}
+                >
+                  <AreaChart
+                    data={projectionData}
+                    margin={{ top: 5, right: 5, left: 5, bottom: 5 }}
+                  >
+                    <defs>
+                      <linearGradient id="rothGradient" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="rgb(var(--primary))" stopOpacity={0.3} />
+                        <stop offset="95%" stopColor="rgb(var(--primary))" stopOpacity={0} />
+                      </linearGradient>
+                    </defs>
+                    <XAxis 
+                      dataKey="year" 
+                      label={{ value: 'Years', position: 'insideBottom', offset: -5 }}
+                      ticks={[0, 10, 20, 30, 40, 50]}
+                    />
+                    <YAxis 
+                      tickFormatter={(value) => {
+                        if (value >= 1000000) {
+                          return `$${(value / 1000000).toFixed(0)}M`;
+                        } else if (value >= 1000) {
+                          return `$${(value / 1000).toFixed(0)}K`;
+                        }
+                        return `$${value}`;
+                      }}
+                    />
+                    <CartesianGrid strokeDasharray="3 3" opacity={0.2} />
+                    <Tooltip content={<CustomTooltip />} />
+                    <Area 
+                      type="monotone" 
+                      dataKey="balance" 
+                      stroke="rgb(var(--primary))" 
+                      strokeWidth={2}
+                      fillOpacity={1} 
+                      fill="url(#rothGradient)" 
+                    />
+                  </AreaChart>
+                </ChartContainer>
+              </div>
+              
+              <div className="mt-4">
+                <h4 className="text-sm font-medium mb-3">Key Projection Milestones</h4>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Year</TableHead>
+                      <TableHead>Age*</TableHead>
+                      <TableHead className="text-right">Projected Balance</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[5, 10, 20, 30, 40].map((milestone) => {
+                      const dataPoint = projectionData[milestone];
+                      return dataPoint ? (
+                        <TableRow key={milestone}>
+                          <TableCell>{milestone}</TableCell>
+                          <TableCell>Current + {milestone}</TableCell>
+                          <TableCell className="text-right font-medium">{dataPoint.formattedBalance}</TableCell>
+                        </TableRow>
+                      ) : null;
+                    })}
+                  </TableBody>
+                </Table>
+                <p className="text-xs text-muted-foreground mt-2">* Age is estimated based on your current age plus years in the future</p>
+              </div>
+            </div>
+          )}
         </CardContent>
       </Card>
     </div>
   );
+};
+
+// Custom tooltip component for the chart
+const CustomTooltip = ({ active, payload }: any) => {
+  if (active && payload && payload.length) {
+    const data = payload[0].payload;
+    return (
+      <div className="bg-background border border-border p-3 rounded-md shadow-md">
+        <p className="font-medium">Year {data.year}</p>
+        <p className="text-primary font-bold">{data.formattedBalance}</p>
+      </div>
+    );
+  }
+  return null;
 };
 
 export default RothIRASection;

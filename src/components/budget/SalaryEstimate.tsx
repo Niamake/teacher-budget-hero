@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -39,7 +38,6 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
     }
   }, [teacherProfile]);
 
-  // Extract percent increase from description for display
   const getPercentIncrease = (description: string) => {
     const match = description.match(/\((\d+(?:\.\d+)?)%\s+increase\)/);
     return match ? match[1] + "%" : "";
@@ -50,6 +48,22 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
 
   const toggleSalaryTable = () => {
     setShowSalaryTable(!showSalaryTable);
+  };
+
+  const formatEffectiveDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric'
+    }).format(date);
+  };
+
+  const formatCalendarDate = (date: Date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      month: '2-digit',
+      day: '2-digit',
+      year: 'numeric'
+    }).format(date);
   };
 
   return (
@@ -103,11 +117,8 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
                   <div className="mt-3 p-2 bg-primary/10 rounded-md text-sm">
                     <div className="flex items-center">
                       <CalendarIcon className="h-4 w-4 mr-2 flex-shrink-0" />
-                      <p className="font-medium">Upcoming Salary Increase:</p>
+                      <p className="font-medium">Salary Increase taking effect on {formatEffectiveDate(nextSchedule.effectiveDate)} ({formatCalendarDate(nextSchedule.effectiveDate)}) - {getPercentIncrease(nextSchedule.description)} increase</p>
                     </div>
-                    <p className="mt-1 ml-6">
-                      {nextSchedule.description} taking effect on {nextSchedule.effectiveDate.toLocaleDateString()} - {getPercentIncrease(nextSchedule.description)} increase
-                    </p>
                   </div>
                 )}
                 
