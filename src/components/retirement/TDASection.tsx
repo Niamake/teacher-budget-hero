@@ -282,7 +282,7 @@ const TDASection = ({ savedData, onSave }: TDASectionProps) => {
                 </ChartContainer>
               </div>
               
-              <div className="mt-8">
+              <div className="mt-4">
                 <h4 className="text-sm font-medium mb-3">Detailed Projection Table</h4>
                 <Table>
                   <TableHeader>
