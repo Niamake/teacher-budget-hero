@@ -281,7 +281,6 @@ const TDASection = ({ savedData, onSave }: TDASectionProps) => {
                   </AreaChart>
                 </ChartContainer>
               </div>
-              <div className="graph-container w-full mb-10"> {/* Added mb-10 */}
               <div className="mt-4">
                 <h4 className="text-sm font-medium mb-3">Detailed Projection Table</h4>
                 <Table>
