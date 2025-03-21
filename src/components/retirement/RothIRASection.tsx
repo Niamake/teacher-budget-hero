@@ -231,7 +231,7 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
                   <Alert className="bg-muted/50">
                     <Info className="h-4 w-4" />
                     <AlertDescription className="text-xs">
-                      This projection uses continuous compounding to model market returns. Past performance does not guarantee future results. Remember that Roth IRA withdrawals are tax-free in retirement, which may make this account particularly valuable. TEST
+                      This projection uses continuous compounding to model market returns. Past performance does not guarantee future results. Remember that Roth IRA withdrawals are tax-free in retirement, which may make this account particularly valuable.
                     </AlertDescription>
                   </Alert>
                 </div>
@@ -304,7 +304,7 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
                     <TableIcon className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-lg">Detailed Projection Table</CardTitle>
+                    <CardTitle className="text-lg">Detailed Projection Table TEST</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
