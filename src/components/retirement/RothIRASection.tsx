@@ -304,7 +304,7 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
                     <TableIcon className="h-5 w-5 text-primary" />
-                    <CardTitle className="text-lg">Detailed Projection Table TEST</CardTitle>
+                    <CardTitle className="text-lg">Detailed Projection Table </CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent>
