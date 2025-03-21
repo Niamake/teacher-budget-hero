@@ -1,4 +1,4 @@
-
+t
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -282,7 +282,7 @@ const TDASection = ({ savedData, onSave }: TDASectionProps) => {
                 </ChartContainer>
               </div>
               
-              <div className="mt-8">
+              <div className="mt-16">
                 <h4 className="text-sm font-medium mb-3">Detailed Projection Table</h4>
                 <Table>
                   <TableHeader>
