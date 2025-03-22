@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { AlertTriangle, Calculator, DollarSign, FileText, Percent } from "lucide-react";
 import { toast } from "sonner";
@@ -62,32 +61,58 @@ const TaxEstimate = () => {
     // Load salary data from localStorage if available
     const teacherProfile = localStorage.getItem('teacherProfile');
     const retirementData = localStorage.getItem('retirementData');
+    const qppData = localStorage.getItem('qppData');
+    
+    let grossSalary = "";
+    let qppContribution = "";
+    let tdaContribution = "";
+    let deferredCompContribution = "";
     
     if (teacherProfile) {
       try {
         const profileData = JSON.parse(teacherProfile);
         if (profileData.salary) {
-          setTaxData(prev => ({ ...prev, grossSalary: profileData.salary.toString() }));
+          grossSalary = profileData.salary.toString();
         }
       } catch (error) {
         console.error("Failed to parse teacher profile:", error);
       }
     }
     
+    if (qppData) {
+      try {
+        const parsedQppData = JSON.parse(qppData);
+        const contributionRate = parsedQppData.contributionRate || 0;
+        qppContribution = (Number(grossSalary) * (contributionRate / 100)).toString();
+      } catch (error) {
+        console.error("Failed to parse QPP data:", error);
+      }
+    }
+    
     if (retirementData) {
       try {
         const parsedData = JSON.parse(retirementData);
-        setTaxData(prev => ({
-          ...prev,
-          qppContribution: "4300", // Default QPP contribution (could be adjusted)
-          tdaContribution: parsedData.tdaData?.annualContribution || "",
-          deferredCompContribution: parsedData.deferredCompData?.annualContribution || ""
-        }));
+        tdaContribution = parsedData.tdaData?.annualContribution || "";
+        deferredCompContribution = parsedData.deferredCompData?.annualContribution || "";
       } catch (error) {
         console.error("Failed to parse retirement data:", error);
       }
     }
+    
+    setTaxData({
+      grossSalary,
+      qppContribution,
+      tdaContribution,
+      deferredCompContribution
+    });
   }, []);
+  
+  // Automatically calculate taxes whenever tax data changes
+  useEffect(() => {
+    if (taxData.grossSalary) {
+      calculateTaxes();
+    }
+  }, [taxData]);
   
   const calculateTaxes = () => {
     const grossSalary = Number(taxData.grossSalary) || 0;
@@ -134,8 +159,6 @@ const TaxEstimate = () => {
     // This is a simplified calculation and does not include state/local taxes or other deductions
     const estimatedTakeHomePay = grossSalary - federalTaxAmount - totalFicaTax - qppContribution - tdaContribution - deferredCompContribution;
     setTakeHomePay(estimatedTakeHomePay);
-    
-    toast.success("Tax estimates calculated successfully");
   };
   
   // Format currency for display
@@ -174,7 +197,7 @@ const TaxEstimate = () => {
                 <CardTitle>Income & Contributions</CardTitle>
               </div>
               <CardDescription>
-                Enter your annual income and retirement contributions to estimate your tax liability.
+                Adjust your annual income and retirement contributions to see how they affect your tax liability.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
@@ -207,7 +230,7 @@ const TaxEstimate = () => {
                       onChange={(e) => setTaxData({ ...taxData, qppContribution: e.target.value })}
                     />
                   </div>
-                  <p className="text-xs text-muted-foreground">Typically around $4,300 for NYC teachers</p>
+                  <p className="text-xs text-muted-foreground">Based on your pension tier and salary</p>
                 </div>
                 
                 <div className="space-y-2">
@@ -241,14 +264,10 @@ const TaxEstimate = () => {
                 </div>
               </div>
               
-              <Button 
-                className="w-full" 
-                onClick={calculateTaxes}
-                disabled={!taxData.grossSalary}
-              >
-                <Calculator className="mr-2 h-4 w-4" />
-                Calculate Tax Estimates
-              </Button>
+              <p className="text-sm text-muted-foreground">
+                These values are automatically populated based on your profile and retirement settings. 
+                You can adjust them to see how different contribution levels affect your taxes.
+              </p>
             </CardContent>
           </Card>
           
