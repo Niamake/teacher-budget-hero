@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
@@ -304,7 +303,7 @@ const TaxEstimate = () => {
             Get a clearer picture of your tax obligations with calculators designed for NYC teachers.
           </p>
           
-          <Alert variant="destructive" className="mb-8">
+          <Alert variant="default" className="mb-8">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Important Disclaimer</AlertTitle>
             <AlertDescription>
