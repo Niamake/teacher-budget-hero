@@ -389,7 +389,7 @@ const TaxEstimate = () => {
                 </div>
               </div>
               
-              <Alert variant="outline" className="bg-muted/30">
+              <Alert variant="default" className="bg-muted/30">
                 <InfoIcon className="h-4 w-4" />
                 <AlertTitle>Standard Deductions Applied</AlertTitle>
                 <AlertDescription>
