@@ -282,6 +282,38 @@ const TDASection = ({ savedData, onSave }: TDASectionProps) => {
                 </ChartContainer>
               </div>
               
+              <div className="mt-4">
+                <h4 className="text-sm font-medium mb-3">Detailed Projection Table</h4>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Year</TableHead>
+                      <TableHead>Age*</TableHead>
+                      <TableHead className="text-right">Projected Balance</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {[5, 10, 20, 30, 40].map((milestone) => {
+                      const dataPoint = projectionData[milestone];
+                      return dataPoint ? (
+                        <TableRow key={milestone}>
+                          <TableCell>{milestone}</TableCell>
+                          <TableCell>Current + {milestone}</TableCell>
+                          <TableCell className="text-right font-medium">{dataPoint.formattedBalance}</TableCell>
+                        </TableRow>
+                      ) : null;
+                    })}
+                  </TableBody>
+                </Table>
+                <p className="text-xs text-muted-foreground mt-2">* Age is estimated based on your current age plus years in the future</p>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
 
 // Custom tooltip component for the chart
 const CustomTooltip = ({ active, payload }: any) => {

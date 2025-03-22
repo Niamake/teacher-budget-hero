@@ -299,7 +299,50 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
                 </div>
               </div>
               
-   Custom tooltip component for the chart
+              {/* Separate card for the detailed projection table */}
+              <div className="mt-8">
+              <Card className="mt-10">
+                <CardHeader className="pb-3">
+                  <div className="flex items-center gap-2">
+                    <TableIcon className="h-5 w-5 text-primary" />
+                    <CardTitle className="text-lg">Detailed Projection Table </CardTitle>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Year</TableHead>
+                        <TableHead>Age*</TableHead>
+                        <TableHead className="text-right">Projected Balance</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {[5, 10, 20, 30, 40].map((milestone) => {
+                        const dataPoint = projectionData[milestone];
+                        return dataPoint ? (
+                          <TableRow key={milestone}>
+                            <TableCell>{milestone}</TableCell>
+                            <TableCell>Current + {milestone}</TableCell>
+                            <TableCell className="text-right font-medium">{dataPoint.formattedBalance}</TableCell>
+                          </TableRow>
+                        ) : null;
+                      })}
+                    </TableBody>
+                  </Table>
+                  <p className="text-xs text-muted-foreground mt-3">* Age is estimated based on your current age plus years in the future</p>
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </CardContent>
+      </Card>
+      </div>
+    </div>
+  );
+};
+
+// Custom tooltip component for the chart
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
