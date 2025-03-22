@@ -71,7 +71,11 @@ const TaxEstimate = () => {
     if (teacherProfile) {
       try {
         const profileData = JSON.parse(teacherProfile);
-        if (profileData.salary) {
+        // First try to get the estimated salary from budget page
+        if (profileData.estimatedSalary) {
+          grossSalary = profileData.estimatedSalary.toString();
+        } else if (profileData.salary) {
+          // Fall back to the salary from job info
           grossSalary = profileData.salary.toString();
         }
       } catch (error) {
@@ -79,7 +83,7 @@ const TaxEstimate = () => {
       }
     }
     
-    if (qppData) {
+    if (qppData && grossSalary) {
       try {
         const parsedQppData = JSON.parse(qppData);
         const contributionRate = parsedQppData.contributionRate || 0;
@@ -215,6 +219,7 @@ const TaxEstimate = () => {
                       onChange={(e) => setTaxData({ ...taxData, grossSalary: e.target.value })}
                     />
                   </div>
+                  <p className="text-xs text-muted-foreground">Auto-filled from your budget page's estimated salary</p>
                 </div>
                 
                 <div className="space-y-2">

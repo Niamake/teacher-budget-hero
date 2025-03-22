@@ -36,7 +36,9 @@ const QPPSection = () => {
     if (teacherProfile) {
       try {
         const profileData = JSON.parse(teacherProfile);
-        if (profileData.salary) {
+        if (profileData.estimatedSalary) {
+          form.setValue("grossSalary", profileData.estimatedSalary.toString());
+        } else if (profileData.salary) {
           form.setValue("grossSalary", profileData.salary.toString());
         }
       } catch (error) {
@@ -273,7 +275,7 @@ const QPPSection = () => {
                           </div>
                         </FormControl>
                         <FormDescription>
-                          This should match your gross annual salary before deductions
+                          This value is auto-filled based on your estimated salary from your profile, but you can modify it to see different scenarios
                         </FormDescription>
                       </FormItem>
                     )}

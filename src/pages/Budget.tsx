@@ -21,6 +21,21 @@ const Budget = () => {
     }
   }, []);
 
+  // Handle salary estimate updates
+  const handleSalaryEstimated = (salary: number) => {
+    if (teacherProfile && salary) {
+      // Update teacher profile with estimated salary
+      const updatedProfile = {
+        ...teacherProfile,
+        estimatedSalary: salary
+      };
+      
+      // Save updated profile to localStorage
+      localStorage.setItem('teacherProfile', JSON.stringify(updatedProfile));
+      setTeacherProfile(updatedProfile);
+    }
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -38,7 +53,10 @@ const Budget = () => {
             <ProfileNeeded />
           ) : (
             <>
-              <SalaryEstimate teacherProfile={teacherProfile} />
+              <SalaryEstimate 
+                teacherProfile={teacherProfile} 
+                onSalaryEstimated={handleSalaryEstimated}
+              />
               <BudgetTools />
             </>
           )}

@@ -15,9 +15,10 @@ import {
 
 interface SalaryEstimateProps {
   teacherProfile: any | null;
+  onSalaryEstimated?: (salary: number) => void;
 }
 
-const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
+const SalaryEstimate = ({ teacherProfile, onSalaryEstimated }: SalaryEstimateProps) => {
   const navigate = useNavigate();
   const [estimatedSalary, setEstimatedSalary] = useState<number | null>(null);
   const [showSalaryTable, setShowSalaryTable] = useState<boolean>(false);
@@ -35,8 +36,12 @@ const SalaryEstimate = ({ teacherProfile }: SalaryEstimateProps) => {
       
       const salary = calculateSalaryWithLongevity(step, differential, yearsService);
       setEstimatedSalary(salary);
+      
+      if (onSalaryEstimated && salary) {
+        onSalaryEstimated(salary);
+      }
     }
-  }, [teacherProfile]);
+  }, [teacherProfile, onSalaryEstimated]);
 
   const getPercentIncrease = (description: string) => {
     const match = description.match(/\((\d+(?:\.\d+)?)%\s+increase\)/);
