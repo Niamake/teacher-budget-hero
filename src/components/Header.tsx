@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -13,7 +12,6 @@ const Header = () => {
     { name: 'Budget', path: '/budget' },
     { name: 'Job Information', path: '/job-info' },
     { name: 'Retirement', path: '/retirement' },
-    { name: 'Pre-Tax Payments', path: '/pre-tax' },
     { name: 'Tax Estimate', path: '/tax-estimate' },
   ];
 
@@ -58,7 +56,6 @@ const Header = () => {
             <span className="text-gradient">TeacherFinance</span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
               <Link
@@ -87,7 +84,6 @@ const Header = () => {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="md:hidden text-foreground p-2 focus:outline-none"
             onClick={toggleMobileMenu}
@@ -98,7 +94,6 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Mobile Menu */}
       <div
         className={`fixed inset-0 bg-background pt-20 px-6 md:hidden transition-all duration-300 ease-in-out z-40 ${
           isMobileMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'

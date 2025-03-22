@@ -1,7 +1,6 @@
-
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Wallet, Briefcase, LineChart, Receipt, Calculator } from 'lucide-react';
+import { ChevronRight, Wallet, Briefcase, LineChart, Calculator } from 'lucide-react';
 
 interface Feature {
   title: string;
@@ -35,13 +34,6 @@ const Features = () => {
       icon: LineChart,
       path: "/retirement",
       color: "bg-green-50 text-green-600"
-    },
-    {
-      title: "Pre-Tax Benefits",
-      description: "Manage your FSA, TransitChek, and other pre-tax benefits to maximize your take-home pay.",
-      icon: Receipt,
-      path: "/pre-tax",
-      color: "bg-amber-50 text-amber-600"
     },
     {
       title: "Tax Estimation",
