@@ -14,7 +14,9 @@ const TaxEstimate = () => {
     grossSalary: "",
     qppContribution: "",
     tdaContribution: "",
-    deferredCompContribution: ""
+    deferredCompContribution: "",
+    extraIncome: "",
+    perSessionHours: ""
   });
   
   const [activeTab, setActiveTab] = useState("federal");
@@ -23,7 +25,8 @@ const TaxEstimate = () => {
     state: { taxableIncome: 0, tax: 0, effectiveRate: 0 },
     city: { taxableIncome: 0, tax: 0, effectiveRate: 0 },
     fica: { socialSecurity: 0, medicare: 0, total: 0 },
-    takeHome: { annual: 0, monthly: 0 }
+    takeHome: { annual: 0, monthly: 0, biweekly: 0 },
+    income: { salary: 0, extraIncome: 0, perSession: 0, total: 0 }
   });
   
   useEffect(() => {
@@ -74,11 +77,28 @@ const TaxEstimate = () => {
       }
     }
     
+    // Also check localStorage for additional income data
+    const budgetData = localStorage.getItem('budgetData');
+    let extraIncome = "";
+    let perSessionHours = "";
+    
+    if (budgetData) {
+      try {
+        const parsedBudgetData = JSON.parse(budgetData);
+        extraIncome = parsedBudgetData.extraIncome || "";
+        perSessionHours = parsedBudgetData.perSessionHours || "";
+      } catch (error) {
+        console.error("Failed to parse budget data:", error);
+      }
+    }
+    
     setTaxData({
       grossSalary,
       qppContribution,
       tdaContribution,
-      deferredCompContribution
+      deferredCompContribution,
+      extraIncome,
+      perSessionHours
     });
   }, []);
   
@@ -87,6 +107,16 @@ const TaxEstimate = () => {
     if (taxData.grossSalary) {
       const results = calculateTaxes(taxData);
       setTaxResults(results);
+      
+      // Save the calculated take-home pay to localStorage for the budget page
+      const budgetData = {
+        takeHomeAnnual: results.takeHome.annual,
+        takeHomeMonthly: results.takeHome.monthly,
+        takeHomeBiweekly: results.takeHome.biweekly,
+        extraIncome: taxData.extraIncome || "",
+        perSessionHours: taxData.perSessionHours || ""
+      };
+      localStorage.setItem('budgetData', JSON.stringify(budgetData));
     }
   }, [taxData]);
   
@@ -103,7 +133,7 @@ const TaxEstimate = () => {
             Get a clearer picture of your tax obligations with calculators designed for NYC teachers.
           </p>
           
-          <Alert variant="default" className="mb-8">
+          <Alert variant="destructive" className="mb-8">
             <AlertTriangle className="h-4 w-4" />
             <AlertTitle>Important Disclaimer</AlertTitle>
             <AlertDescription>

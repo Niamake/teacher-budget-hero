@@ -5,6 +5,8 @@ export interface TaxData {
   qppContribution: string;
   tdaContribution: string;
   deferredCompContribution: string;
+  extraIncome?: string;
+  perSessionHours?: string;
 }
 
 // Tax calculation results
@@ -32,6 +34,13 @@ export interface TaxResults {
   takeHome: {
     annual: number;
     monthly: number;
+    biweekly: number;
+  };
+  income: {
+    salary: number;
+    extraIncome: number;
+    perSession: number;
+    total: number;
   };
 }
 
@@ -63,4 +72,5 @@ export interface FicaRates {
 export interface StandardDeductions {
   federal: number;
   state: number;
+  city: number;
 }

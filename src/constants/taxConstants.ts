@@ -42,5 +42,33 @@ export const FICA_RATES: FicaRates = {
 // Standard deductions
 export const STANDARD_DEDUCTIONS: StandardDeductions = {
   federal: 14600, // Federal standard deduction for single filers
-  state: 8000 // NY State standard deduction for single filers
+  state: 8000, // NY State standard deduction for single filers
+  city: 3200 // NYC standard deduction
+};
+
+// Per Session pay rates by date
+export const PER_SESSION_RATES = [
+  { date: new Date('2021-05-14'), rate: 53.98 },
+  { date: new Date('2022-09-14'), rate: 55.60 },
+  { date: new Date('2024-01-18'), rate: 57.27 },
+  { date: new Date('2025-01-18'), rate: 58.99 },
+  { date: new Date('2025-09-14'), rate: 60.91 },
+  { date: new Date('2026-09-14'), rate: 63.04 }
+];
+
+// Get current per session rate
+export const getCurrentPerSessionRate = (): number => {
+  const today = new Date();
+  let currentRate = 53.98; // Default to oldest rate
+  
+  // Find the most recent rate that applies
+  for (const rateInfo of PER_SESSION_RATES) {
+    if (today >= rateInfo.date) {
+      currentRate = rateInfo.rate;
+    } else {
+      break;
+    }
+  }
+  
+  return currentRate;
 };

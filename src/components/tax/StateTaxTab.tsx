@@ -25,8 +25,8 @@ const StateTaxTab: React.FC<StateTaxTabProps> = ({ taxResults, grossSalary }) =>
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-primary/5 rounded-lg">
-            <p className="text-sm text-muted-foreground">Gross Salary</p>
-            <p className="text-xl font-bold">{formatCurrency(grossSalary)}</p>
+            <p className="text-sm text-muted-foreground">Total Income</p>
+            <p className="text-xl font-bold">{formatCurrency(taxResults.income.total)}</p>
           </div>
           
           <div className="p-4 bg-primary/5 rounded-lg">
@@ -35,7 +35,7 @@ const StateTaxTab: React.FC<StateTaxTabProps> = ({ taxResults, grossSalary }) =>
               {formatCurrency(taxResults.state.taxableIncome)}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Gross - (TDA + 457b + Standard Deduction)
+              Income - (TDA + 457b + $8,000 Standard Deduction)
             </p>
           </div>
         </div>

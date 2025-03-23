@@ -25,8 +25,8 @@ const CityTaxTab: React.FC<CityTaxTabProps> = ({ taxResults, grossSalary }) => {
       <div className="space-y-4">
         <div className="grid grid-cols-2 gap-4">
           <div className="p-4 bg-primary/5 rounded-lg">
-            <p className="text-sm text-muted-foreground">Gross Salary</p>
-            <p className="text-xl font-bold">{formatCurrency(grossSalary)}</p>
+            <p className="text-sm text-muted-foreground">Total Income</p>
+            <p className="text-xl font-bold">{formatCurrency(taxResults.income.total)}</p>
           </div>
           
           <div className="p-4 bg-primary/5 rounded-lg">
@@ -35,7 +35,7 @@ const CityTaxTab: React.FC<CityTaxTabProps> = ({ taxResults, grossSalary }) => {
               {formatCurrency(taxResults.city.taxableIncome)}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
-              Same as NY State taxable income
+              Income - (TDA + 457b + $3,200 Standard Deduction)
             </p>
           </div>
         </div>

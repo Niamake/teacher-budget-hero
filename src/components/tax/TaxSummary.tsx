@@ -15,9 +15,29 @@ const TaxSummary: React.FC<TaxSummaryProps> = ({ taxResults, taxData }) => {
       
       <div className="space-y-4">
         <div className="flex justify-between py-2 border-b">
-          <span>Gross Annual Salary</span>
-          <span className="font-medium">{formatCurrency(Number(taxData.grossSalary) || 0)}</span>
+          <span>Annual Salary</span>
+          <span className="font-medium">{formatCurrency(taxResults.income.salary)}</span>
         </div>
+        {(taxResults.income.extraIncome > 0 || taxResults.income.perSession > 0) && (
+          <>
+            {taxResults.income.extraIncome > 0 && (
+              <div className="flex justify-between py-2 border-b">
+                <span>Additional Income</span>
+                <span className="font-medium">{formatCurrency(taxResults.income.extraIncome)}</span>
+              </div>
+            )}
+            {taxResults.income.perSession > 0 && (
+              <div className="flex justify-between py-2 border-b">
+                <span>Per Session Income</span>
+                <span className="font-medium">{formatCurrency(taxResults.income.perSession)}</span>
+              </div>
+            )}
+            <div className="flex justify-between py-2 border-b font-medium">
+              <span>Total Gross Income</span>
+              <span>{formatCurrency(taxResults.income.total)}</span>
+            </div>
+          </>
+        )}
         <div className="flex justify-between py-2 border-b">
           <span>Retirement Contributions</span>
           <span className="font-medium">
@@ -51,6 +71,10 @@ const TaxSummary: React.FC<TaxSummaryProps> = ({ taxResults, taxData }) => {
         <div className="flex justify-between py-2 text-lg">
           <span>Estimated Monthly Take-Home Pay</span>
           <span className="font-medium">{formatCurrency(taxResults.takeHome.monthly)}</span>
+        </div>
+        <div className="flex justify-between py-2 text-lg">
+          <span>Estimated Bi-weekly Take-Home Pay</span>
+          <span className="font-medium">{formatCurrency(taxResults.takeHome.biweekly)}</span>
         </div>
       </div>
       

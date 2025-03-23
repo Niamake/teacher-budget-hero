@@ -5,7 +5,8 @@ import {
   STATE_TAX_BRACKETS, 
   CITY_TAX_BRACKETS,
   FICA_RATES, 
-  STANDARD_DEDUCTIONS 
+  STANDARD_DEDUCTIONS,
+  getCurrentPerSessionRate
 } from "../constants/taxConstants";
 
 export const calculateTaxes = (taxData: TaxData): TaxResults => {
@@ -13,15 +14,24 @@ export const calculateTaxes = (taxData: TaxData): TaxResults => {
   const qppContribution = Number(taxData.qppContribution) || 0;
   const tdaContribution = Number(taxData.tdaContribution) || 0;
   const deferredCompContribution = Number(taxData.deferredCompContribution) || 0;
+  const extraIncome = Number(taxData.extraIncome) || 0;
+  const perSessionHours = Number(taxData.perSessionHours) || 0;
+  
+  // Calculate per session income
+  const perSessionRate = getCurrentPerSessionRate();
+  const perSessionIncome = perSessionHours * perSessionRate;
+  
+  // Total gross income including salary, extra income, and per session
+  const totalGrossIncome = grossSalary + extraIncome + perSessionIncome;
   
   // Calculate federal taxable income (subtract all retirement contributions and standard deduction)
-  const federalTaxableIncome = Math.max(0, grossSalary - qppContribution - tdaContribution - deferredCompContribution - STANDARD_DEDUCTIONS.federal);
+  const federalTaxableIncome = Math.max(0, totalGrossIncome - qppContribution - tdaContribution - deferredCompContribution - STANDARD_DEDUCTIONS.federal);
   
-  // Calculate state and city taxable income (subtract TDA and 457b but not QPP, and state standard deduction)
-  const stateTaxableIncome = Math.max(0, grossSalary - tdaContribution - deferredCompContribution - STANDARD_DEDUCTIONS.state);
+  // Calculate state taxable income (subtract TDA and 457b but not QPP, and state standard deduction)
+  const stateTaxableIncome = Math.max(0, totalGrossIncome - tdaContribution - deferredCompContribution - STANDARD_DEDUCTIONS.state);
   
-  // City uses the same taxable income as state
-  const cityTaxableIncome = stateTaxableIncome;
+  // City uses the same deductions as state but with city-specific standard deduction
+  const cityTaxableIncome = Math.max(0, totalGrossIncome - tdaContribution - deferredCompContribution - STANDARD_DEDUCTIONS.city);
   
   // Calculate federal tax
   let federalTax = 0;
@@ -69,26 +79,27 @@ export const calculateTaxes = (taxData: TaxData): TaxResults => {
   
   // Calculate FICA (Social Security & Medicare)
   // Social Security tax is 6.2% on first $160,200 (2024)
-  const socialSecurityTax = Math.min(grossSalary, FICA_RATES.socialSecurityCap) * FICA_RATES.socialSecurity;
+  const socialSecurityTax = Math.min(totalGrossIncome, FICA_RATES.socialSecurityCap) * FICA_RATES.socialSecurity;
   
   // Medicare tax is 1.45% on all income, plus 0.9% on income over $200,000
-  let medicareTax = grossSalary * FICA_RATES.medicare;
-  if (grossSalary > FICA_RATES.medicareThreshold) {
-    medicareTax += (grossSalary - FICA_RATES.medicareThreshold) * FICA_RATES.medicareAdditional;
+  let medicareTax = totalGrossIncome * FICA_RATES.medicare;
+  if (totalGrossIncome > FICA_RATES.medicareThreshold) {
+    medicareTax += (totalGrossIncome - FICA_RATES.medicareThreshold) * FICA_RATES.medicareAdditional;
   }
   
   const totalFicaTax = socialSecurityTax + medicareTax;
   
   // Calculate effective rates
-  const federalEffectiveRate = federalTaxableIncome > 0 ? (federalTax / grossSalary) * 100 : 0;
-  const stateEffectiveRate = stateTaxableIncome > 0 ? (stateTax / grossSalary) * 100 : 0;
-  const cityEffectiveRate = cityTaxableIncome > 0 ? (cityTax / grossSalary) * 100 : 0;
+  const federalEffectiveRate = federalTaxableIncome > 0 ? (federalTax / totalGrossIncome) * 100 : 0;
+  const stateEffectiveRate = stateTaxableIncome > 0 ? (stateTax / totalGrossIncome) * 100 : 0;
+  const cityEffectiveRate = cityTaxableIncome > 0 ? (cityTax / totalGrossIncome) * 100 : 0;
   
   // Calculate take-home pay
   const totalTax = federalTax + stateTax + cityTax + totalFicaTax;
   const totalDeductions = qppContribution + tdaContribution + deferredCompContribution;
-  const annualTakeHomePay = grossSalary - totalTax - totalDeductions;
+  const annualTakeHomePay = totalGrossIncome - totalTax - totalDeductions;
   const monthlyTakeHomePay = annualTakeHomePay / 12;
+  const biweeklyTakeHomePay = monthlyTakeHomePay / 2;
   
   return {
     federal: {
@@ -113,7 +124,14 @@ export const calculateTaxes = (taxData: TaxData): TaxResults => {
     },
     takeHome: {
       annual: annualTakeHomePay,
-      monthly: monthlyTakeHomePay
+      monthly: monthlyTakeHomePay,
+      biweekly: biweeklyTakeHomePay
+    },
+    income: {
+      salary: grossSalary,
+      extraIncome: extraIncome,
+      perSession: perSessionIncome,
+      total: totalGrossIncome
     }
   };
 };

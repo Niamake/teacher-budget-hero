@@ -18,8 +18,6 @@ interface TaxResultsProps {
 }
 
 const TaxResults: React.FC<TaxResultsProps> = ({ taxResults, taxData, activeTab, setActiveTab }) => {
-  const grossSalary = Number(taxData.grossSalary) || 0;
-
   return (
     <Card className="mb-8">
       <CardHeader>
@@ -41,19 +39,19 @@ const TaxResults: React.FC<TaxResultsProps> = ({ taxResults, taxData, activeTab,
           </TabsList>
           
           <TabsContent value="federal">
-            <FederalTaxTab taxResults={taxResults} grossSalary={grossSalary} />
+            <FederalTaxTab taxResults={taxResults} grossSalary={taxResults.income.total} />
           </TabsContent>
           
           <TabsContent value="state">
-            <StateTaxTab taxResults={taxResults} grossSalary={grossSalary} />
+            <StateTaxTab taxResults={taxResults} grossSalary={taxResults.income.total} />
           </TabsContent>
           
           <TabsContent value="city">
-            <CityTaxTab taxResults={taxResults} grossSalary={grossSalary} />
+            <CityTaxTab taxResults={taxResults} grossSalary={taxResults.income.total} />
           </TabsContent>
           
           <TabsContent value="fica">
-            <FicaTaxTab taxResults={taxResults} grossSalary={grossSalary} />
+            <FicaTaxTab taxResults={taxResults} grossSalary={taxResults.income.total} />
           </TabsContent>
         </Tabs>
         
