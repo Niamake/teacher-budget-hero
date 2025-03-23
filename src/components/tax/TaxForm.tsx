@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { InfoIcon } from 'lucide-react';
 import { Input } from "@/components/ui/input";
@@ -7,8 +6,8 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { DollarSign, Clock } from "lucide-react";
 import { TaxData } from '@/types/tax';
-import { STANDARD_DEDUCTIONS, getCurrentPerSessionRate } from '@/constants/taxConstants';
-import { formatCurrency } from '@/utils/taxCalculations';
+import { STANDARD_DEDUCTIONS } from '@/constants/taxConstants';
+import { formatCurrency, getCurrentPerSessionRate } from '@/utils/taxCalculations';
 
 interface TaxFormProps {
   taxData: TaxData;

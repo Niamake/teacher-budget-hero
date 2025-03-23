@@ -6,8 +6,25 @@ import {
   CITY_TAX_BRACKETS,
   FICA_RATES, 
   STANDARD_DEDUCTIONS,
-  getCurrentPerSessionRate
+  PER_SESSION_RATES
 } from "../constants/taxConstants";
+
+// Get current per session rate
+export const getCurrentPerSessionRate = (): number => {
+  const today = new Date();
+  let currentRate = 53.98; // Default to oldest rate
+  
+  // Find the most recent rate that applies
+  for (const rateInfo of PER_SESSION_RATES) {
+    if (today >= rateInfo.date) {
+      currentRate = rateInfo.rate;
+    } else {
+      break;
+    }
+  }
+  
+  return currentRate;
+};
 
 export const calculateTaxes = (taxData: TaxData): TaxResults => {
   const grossSalary = Number(taxData.grossSalary) || 0;

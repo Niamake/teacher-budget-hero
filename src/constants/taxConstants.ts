@@ -1,4 +1,3 @@
-
 import { FederalTaxBracket, StateTaxBracket, CityTaxBracket, FicaRates, StandardDeductions } from "../types/tax";
 
 // Federal tax brackets for 2024
@@ -55,20 +54,3 @@ export const PER_SESSION_RATES = [
   { date: new Date('2025-09-14'), rate: 60.91 },
   { date: new Date('2026-09-14'), rate: 63.04 }
 ];
-
-// Get current per session rate
-export const getCurrentPerSessionRate = (): number => {
-  const today = new Date();
-  let currentRate = 53.98; // Default to oldest rate
-  
-  // Find the most recent rate that applies
-  for (const rateInfo of PER_SESSION_RATES) {
-    if (today >= rateInfo.date) {
-      currentRate = rateInfo.rate;
-    } else {
-      break;
-    }
-  }
-  
-  return currentRate;
-};
