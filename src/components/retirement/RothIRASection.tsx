@@ -300,7 +300,7 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
               </div>
               
               {/* Separate card for the detailed projection table */}
-            </div className="mt-8">
+            <div className="mt-8">
               <Card className="mt-10">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
