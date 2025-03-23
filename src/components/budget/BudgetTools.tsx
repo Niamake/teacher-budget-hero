@@ -28,7 +28,7 @@ const BudgetTools = () => {
         const parsedData = JSON.parse(storedBudgetData);
         setBudgetData(parsedData);
         
-        // Set initial paycheck amount from the biweekly take-home pay
+        // Set initial paycheck amount from the semi-monthly take-home pay
         if (parsedData.takeHomeBiweekly) {
           setPaycheck(Math.round(parsedData.takeHomeBiweekly).toString());
         }
@@ -90,7 +90,7 @@ const BudgetTools = () => {
                   </p>
                 </div>
                 <div className="bg-muted rounded-lg p-4">
-                  <p className="text-sm font-medium text-muted-foreground mb-2">Bi-Weekly Paycheck</p>
+                  <p className="text-sm font-medium text-muted-foreground mb-2">Semi-Monthly Paycheck</p>
                   <p className="text-2xl md:text-3xl font-bold">
                     {formatCurrency(budgetData.takeHomeBiweekly)}
                   </p>
@@ -107,7 +107,7 @@ const BudgetTools = () => {
               
               <div className="grid gap-6 md:grid-cols-2 mt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="actual-paycheck">Your Actual Bi-Weekly Paycheck</Label>
+                  <Label htmlFor="actual-paycheck">Your Actual Semi-Monthly Paycheck</Label>
                   <div className="relative">
                     <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                     <Input
@@ -183,20 +183,6 @@ const BudgetTools = () => {
               </Button>
             </div>
           )}
-        </CardContent>
-      </Card>
-      
-      <Card>
-        <CardHeader>
-          <CardTitle>Budget Management</CardTitle>
-          <CardDescription>
-            Track your income and expenses to manage your finances effectively.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <p className="text-center text-lg text-foreground/60">
-            Advanced budget management tools coming soon...
-          </p>
         </CardContent>
       </Card>
     </div>

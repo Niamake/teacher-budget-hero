@@ -73,7 +73,7 @@ const TaxSummary: React.FC<TaxSummaryProps> = ({ taxResults, taxData }) => {
           <span className="font-medium">{formatCurrency(taxResults.takeHome.monthly)}</span>
         </div>
         <div className="flex justify-between py-2 text-lg">
-          <span>Estimated Bi-weekly Take-Home Pay</span>
+          <span>Estimated Semi-Monthly Take-Home Pay</span>
           <span className="font-medium">{formatCurrency(taxResults.takeHome.biweekly)}</span>
         </div>
       </div>

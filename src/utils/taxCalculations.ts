@@ -47,7 +47,7 @@ export const calculateTaxes = (taxData: TaxData): TaxResults => {
   // Calculate state taxable income (subtract TDA and 457b but not QPP, and state standard deduction)
   const stateTaxableIncome = Math.max(0, totalGrossIncome - tdaContribution - deferredCompContribution - STANDARD_DEDUCTIONS.state);
   
-  // City uses the same deductions as state but with city-specific standard deduction
+  // City uses the same deductions as state but with city-specific standard deduction of $3,200
   const cityTaxableIncome = Math.max(0, totalGrossIncome - tdaContribution - deferredCompContribution - STANDARD_DEDUCTIONS.city);
   
   // Calculate federal tax
