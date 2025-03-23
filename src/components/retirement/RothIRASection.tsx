@@ -300,6 +300,7 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
               </div>
               
               {/* Separate card for the detailed projection table */}
+            </div className="mt-8">
               <Card className="mt-10">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
@@ -332,6 +333,7 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
                   <p className="text-xs text-muted-foreground mt-3">* Age is estimated based on your current age plus years in the future</p>
                 </CardContent>
               </Card>
+            </div>
             </>
           )}
         </CardContent>
