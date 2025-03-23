@@ -124,7 +124,7 @@ const Salary = () => {
                     </div>
                     
                     <div className="space-y-2">
-                      <Label htmlFor="per-session-hours">Per Session Hours (Annually)</Label>
+                      <Label htmlFor="per-session-hours">Per Session Hours</Label>
                       <div className="relative">
                         <Input
                           id="per-session-hours"

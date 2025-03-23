@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
@@ -9,7 +10,8 @@ const Header = () => {
   const location = useLocation();
 
   const navItems = [
-    { name: 'Budget', path: '/budget' },
+    { name: 'Salary', path: '/salary' },
+    { name: 'Budget Management', path: '/budgeting' },
     { name: 'Job Information', path: '/job-info' },
     { name: 'Retirement', path: '/retirement' },
     { name: 'Tax Estimate', path: '/tax-estimate' },

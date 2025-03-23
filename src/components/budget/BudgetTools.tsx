@@ -6,17 +6,15 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { InfoIcon, Calculator, CreditCard } from 'lucide-react';
-import { formatCurrency, getCurrentPerSessionRate } from '@/utils/taxCalculations';
+import { InfoIcon, Calculator } from 'lucide-react';
+import { formatCurrency } from '@/utils/taxCalculations';
 
 const BudgetTools = () => {
   const navigate = useNavigate();
   const [budgetData, setBudgetData] = useState<any>({
     takeHomeAnnual: 0,
     takeHomeMonthly: 0,
-    takeHomeBiweekly: 0,
-    extraIncome: "",
-    perSessionHours: ""
+    takeHomeBiweekly: 0
   });
   const [paycheck, setPaycheck] = useState<string>("");
   
@@ -38,18 +36,6 @@ const BudgetTools = () => {
     }
   }, []);
   
-  const handleExtraIncomeChange = (value: string) => {
-    const updatedData = { ...budgetData, extraIncome: value };
-    setBudgetData(updatedData);
-    localStorage.setItem('budgetData', JSON.stringify(updatedData));
-  };
-  
-  const handlePerSessionHoursChange = (value: string) => {
-    const updatedData = { ...budgetData, perSessionHours: value };
-    setBudgetData(updatedData);
-    localStorage.setItem('budgetData', JSON.stringify(updatedData));
-  };
-  
   const handlePaycheckChange = (value: string) => {
     setPaycheck(value);
   };
@@ -58,15 +44,12 @@ const BudgetTools = () => {
     navigate('/tax-estimate');
   };
   
-  const perSessionRate = getCurrentPerSessionRate();
-  const perSessionIncome = Number(budgetData.perSessionHours || 0) * perSessionRate;
-  
   return (
     <div className="space-y-8">
       <Card>
         <CardHeader>
           <div className="flex items-center gap-2">
-            <CreditCard className="h-6 w-6 text-primary" />
+            <Calculator className="h-6 w-6 text-primary" />
             <CardTitle>Paycheck Calculator</CardTitle>
           </div>
           <CardDescription>
@@ -105,72 +88,21 @@ const BudgetTools = () => {
                 </AlertDescription>
               </Alert>
               
-              <div className="grid gap-6 md:grid-cols-2 mt-4">
-                <div className="space-y-2">
-                  <Label htmlFor="actual-paycheck">Your Actual Semi-Monthly Paycheck</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                    <Input
-                      id="actual-paycheck"
-                      type="number"
-                      placeholder="0"
-                      className="pl-8"
-                      value={paycheck}
-                      onChange={(e) => handlePaycheckChange(e.target.value)}
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground">Adjust this to match your actual paycheck if needed</p>
-                </div>
-                
-                <div className="space-y-6">
-                  <div className="grid grid-cols-1 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="extra-income">Additional Annual Income</Label>
-                      <div className="relative">
-                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
-                        <Input
-                          id="extra-income"
-                          type="number"
-                          placeholder="0"
-                          className="pl-8"
-                          value={budgetData.extraIncome || ""}
-                          onChange={(e) => handleExtraIncomeChange(e.target.value)}
-                        />
-                      </div>
-                      <p className="text-xs text-muted-foreground">Income not from your teaching position</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
               <div className="space-y-2">
-                <Label htmlFor="per-session-hours">Per Session Hours (Annually)</Label>
+                <Label htmlFor="actual-paycheck">Your Actual Semi-Monthly Paycheck</Label>
                 <div className="relative">
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
                   <Input
-                    id="per-session-hours"
+                    id="actual-paycheck"
                     type="number"
                     placeholder="0"
-                    value={budgetData.perSessionHours || ""}
-                    onChange={(e) => handlePerSessionHoursChange(e.target.value)}
+                    className="pl-8"
+                    value={paycheck}
+                    onChange={(e) => handlePaycheckChange(e.target.value)}
                   />
                 </div>
-                <div className="flex justify-between">
-                  <p className="text-xs text-muted-foreground">Current rate: ${perSessionRate.toFixed(2)}/hour</p>
-                  {perSessionIncome > 0 && (
-                    <p className="text-xs font-medium">Estimated income: {formatCurrency(perSessionIncome)}</p>
-                  )}
-                </div>
+                <p className="text-xs text-muted-foreground">Adjust this to match your actual paycheck if needed</p>
               </div>
-              
-              {(budgetData.extraIncome || budgetData.perSessionHours) && (
-                <div className="text-center mt-4">
-                  <p className="text-sm mb-2">You've added additional income. Recalculate your taxes to see the impact on take-home pay.</p>
-                  <Button onClick={handleRecalculateTaxes} className="mt-2">
-                    <Calculator className="h-4 w-4 mr-2" />
-                    Recalculate Taxes
-                  </Button>
-                </div>
-              )}
             </>
           ) : (
             <div className="text-center py-6">
