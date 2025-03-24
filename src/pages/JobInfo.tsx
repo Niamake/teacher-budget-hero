@@ -1,8 +1,9 @@
+
 import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { CalendarIcon, BadgeDollarSign, BriefcaseIcon, Calculator, FileText, InfoIcon, ExternalLink, Plus, Trash2 } from 'lucide-react';
+import { CalendarIcon, BadgeDollarSign, BriefcaseIcon, Calculator, FileText, InfoIcon, ExternalLink, Plus, Trash2, Shield } from 'lucide-react';
 import { format } from 'date-fns';
 
 import Header from '@/components/Header';
@@ -28,6 +29,7 @@ import {
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const formSchema = z.object({
   firstName: z.string().min(2, {
@@ -56,6 +58,10 @@ const formSchema = z.object({
   }),
   tenured: z.boolean(),
   additionalNotes: z.string().optional(),
+  pensionTier: z.enum(["4", "5", "6"], {
+    required_error: "Please select your pension tier.",
+  }),
+  completedMandatory: z.boolean().default(false),
 });
 
 const historyEntrySchema = z.object({
@@ -97,12 +103,24 @@ const JobInfo = () => {
       certifications: "",
       tenured: false,
       additionalNotes: "",
+      pensionTier: "6",
+      completedMandatory: false,
     },
   });
 
   function onSubmit(values: z.infer<typeof formSchema>) {
     console.log(values);
     localStorage.setItem('teacherProfile', JSON.stringify(values));
+    
+    // Also save pension tier data to qppData in localStorage
+    const existingQppData = localStorage.getItem('qppData');
+    const parsedQppData = existingQppData ? JSON.parse(existingQppData) : {};
+    const qppData = {
+      ...parsedQppData,
+      pensionTier: values.pensionTier,
+      completedMandatory: values.completedMandatory
+    };
+    localStorage.setItem('qppData', JSON.stringify(qppData));
     
     setIsSaved(true);
     toast({
@@ -427,6 +445,89 @@ const JobInfo = () => {
                           </FormItem>
                         )}
                       />
+
+                      <Card className="border">
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center gap-2">
+                            <Shield className="h-5 w-5 text-primary" />
+                            <CardTitle className="text-lg">Pension Information</CardTitle>
+                          </div>
+                          <CardDescription>
+                            This information is used to calculate your automatic QPP (pension) contributions
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <FormField
+                            control={form.control}
+                            name="pensionTier"
+                            render={({ field }) => (
+                              <FormItem className="space-y-3">
+                                <FormLabel className="after:content-['*'] after:ml-0.5 after:text-destructive">Which pension tier are you in?</FormLabel>
+                                <FormControl>
+                                  <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="flex flex-col space-y-1"
+                                  >
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value="4" />
+                                      </FormControl>
+                                      <FormLabel className="font-normal">
+                                        Tier IV (joined TRS before January 1, 2010)
+                                      </FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value="5" />
+                                      </FormControl>
+                                      <FormLabel className="font-normal">
+                                        Tier V (joined TRS between January 1, 2010 and March 31, 2012)
+                                      </FormLabel>
+                                    </FormItem>
+                                    <FormItem className="flex items-center space-x-3 space-y-0">
+                                      <FormControl>
+                                        <RadioGroupItem value="6" />
+                                      </FormControl>
+                                      <FormLabel className="font-normal">
+                                        Tier VI (joined TRS on or after April 1, 2012)
+                                      </FormLabel>
+                                    </FormItem>
+                                  </RadioGroup>
+                                </FormControl>
+                                <FormDescription>
+                                  Your pension tier is determined by when you joined the Teachers' Retirement System
+                                </FormDescription>
+                              </FormItem>
+                            )}
+                          />
+
+                          {form.watch("pensionTier") === "4" && (
+                            <FormField
+                              control={form.control}
+                              name="completedMandatory"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                                  <FormControl>
+                                    <Checkbox
+                                      checked={field.value}
+                                      onCheckedChange={field.onChange}
+                                    />
+                                  </FormControl>
+                                  <div className="space-y-1 leading-none">
+                                    <FormLabel>
+                                      I have completed my mandatory 3% contributions for 10 years
+                                    </FormLabel>
+                                    <FormDescription>
+                                      Tier IV members must contribute 3% of their salary until they complete 10 years of service
+                                    </FormDescription>
+                                  </div>
+                                </FormItem>
+                              )}
+                            />
+                          )}
+                        </CardContent>
+                      </Card>
 
                       <FormField
                         control={form.control}

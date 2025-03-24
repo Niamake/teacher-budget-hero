@@ -3,8 +3,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { useState, useEffect } from "react";
 import { Shield, Clock, Calculator, Save } from "lucide-react";
@@ -12,20 +10,48 @@ import { toast } from "sonner";
 import { useForm } from "react-hook-form";
 
 interface QPPFormValues {
-  pensionTier: "4" | "5" | "6";
-  completedMandatory: boolean;
   grossSalary: string;
 }
+
+// Function to calculate QPP contribution based on tier and salary
+const calculateContribution = (
+  tier: string, 
+  completedMandatory: boolean, 
+  grossSalary: number
+): { rate: number, amount: number } => {
+  let rate = 0;
+
+  if (tier === "4") {
+    rate = completedMandatory ? 0 : 3;
+  } else if (tier === "5") {
+    rate = 3.5;
+  } else if (tier === "6") {
+    if (grossSalary <= 45000) {
+      rate = 3;
+    } else if (grossSalary <= 55000) {
+      rate = 3.5;
+    } else if (grossSalary <= 75000) {
+      rate = 4.5;
+    } else if (grossSalary <= 100000) {
+      rate = 5.75;
+    } else {
+      rate = 6;
+    }
+  }
+
+  const amount = grossSalary * (rate / 100);
+  return { rate, amount };
+};
 
 const QPPSection = () => {
   const [currentBalance, setCurrentBalance] = useState("");
   const [contributionRate, setContributionRate] = useState<number | null>(null);
   const [contributionAmount, setContributionAmount] = useState<number | null>(null);
+  const [pensionTier, setPensionTier] = useState<string>("6");
+  const [completedMandatory, setCompletedMandatory] = useState<boolean>(false);
   
   const form = useForm<QPPFormValues>({
     defaultValues: {
-      pensionTier: "6",
-      completedMandatory: false,
       grossSalary: ""
     }
   });
@@ -36,10 +62,19 @@ const QPPSection = () => {
     if (teacherProfile) {
       try {
         const profileData = JSON.parse(teacherProfile);
+        
+        // Set pension tier from profile if available
+        if (profileData.pensionTier) {
+          setPensionTier(profileData.pensionTier);
+          setCompletedMandatory(profileData.completedMandatory || false);
+        }
+        
         if (profileData.estimatedSalary) {
           form.setValue("grossSalary", profileData.estimatedSalary.toString());
+          updateContribution(profileData.estimatedSalary.toString());
         } else if (profileData.salary) {
           form.setValue("grossSalary", profileData.salary.toString());
+          updateContribution(profileData.salary.toString());
         }
       } catch (error) {
         console.error("Failed to parse teacher profile:", error);
@@ -52,65 +87,54 @@ const QPPSection = () => {
       try {
         const parsedData = JSON.parse(qppData);
         setCurrentBalance(parsedData.currentBalance || "");
-        form.setValue("pensionTier", parsedData.pensionTier || "6");
-        form.setValue("completedMandatory", parsedData.completedMandatory || false);
         
-        // Calculate contribution rate and amount
-        calculateContribution(
-          parsedData.pensionTier, 
-          parsedData.completedMandatory, 
-          form.getValues("grossSalary")
-        );
+        // Set pension tier from QPP data if available
+        if (parsedData.pensionTier) {
+          setPensionTier(parsedData.pensionTier);
+          setCompletedMandatory(parsedData.completedMandatory || false);
+        }
+        
+        // Calculate contribution based on current data
+        updateContribution(form.getValues("grossSalary"));
       } catch (error) {
         console.error("Failed to parse QPP data:", error);
       }
     }
   }, []);
 
-  const calculateContribution = (
-    tier: string, 
-    completedMandatory: boolean, 
-    grossSalary: string
-  ) => {
+  const updateContribution = (grossSalary: string) => {
     const salary = Number(grossSalary) || 0;
-    let rate = 0;
-
-    if (tier === "4") {
-      rate = completedMandatory ? 0 : 3;
-    } else if (tier === "5") {
-      rate = 3.5;
-    } else if (tier === "6") {
-      if (salary <= 45000) {
-        rate = 3;
-      } else if (salary <= 55000) {
-        rate = 3.5;
-      } else if (salary <= 75000) {
-        rate = 4.5;
-      } else if (salary <= 100000) {
-        rate = 5.75;
-      } else {
-        rate = 6;
-      }
-    }
-
+    const { rate, amount } = calculateContribution(pensionTier, completedMandatory, salary);
+    
     setContributionRate(rate);
-    setContributionAmount(salary * (rate / 100));
+    setContributionAmount(amount);
   };
 
   const onSubmit = (data: QPPFormValues) => {
-    calculateContribution(data.pensionTier, data.completedMandatory, data.grossSalary);
+    updateContribution(data.grossSalary);
     
     // Save to localStorage
     const qppData = {
       currentBalance,
-      pensionTier: data.pensionTier,
-      completedMandatory: data.completedMandatory,
-      contributionRate: contributionRate
+      pensionTier,
+      completedMandatory,
+      contributionRate
     };
     
     localStorage.setItem('qppData', JSON.stringify(qppData));
     toast.success("Saved your QPP information");
   };
+
+  // When form values change, update the contribution calculation
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      if (value.grossSalary) {
+        updateContribution(value.grossSalary);
+      }
+    });
+    
+    return () => subscription.unsubscribe();
+  }, [form.watch, pensionTier, completedMandatory]);
 
   // Format currency for display
   const formatCurrency = (value: number) => {
@@ -183,81 +207,14 @@ const QPPSection = () => {
 
           <Card className="mt-6">
             <CardHeader>
-              <CardTitle>Determine Your QPP Contribution</CardTitle>
+              <CardTitle>Your QPP Contribution</CardTitle>
               <CardDescription>
-                Your contribution rate is determined by your pension tier and salary level
+                Your contribution is automatically calculated based on your pension tier and salary
               </CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                  <FormField
-                    control={form.control}
-                    name="pensionTier"
-                    render={({ field }) => (
-                      <FormItem className="space-y-3">
-                        <FormLabel>Which pension tier are you in?</FormLabel>
-                        <FormControl>
-                          <RadioGroup
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                            className="flex flex-col space-y-1"
-                          >
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="4" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Tier IV (joined TRS before January 1, 2010)
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="5" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Tier V (joined TRS between January 1, 2010 and March 31, 2012)
-                              </FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="6" />
-                              </FormControl>
-                              <FormLabel className="font-normal">
-                                Tier VI (joined TRS on or after April 1, 2012)
-                              </FormLabel>
-                            </FormItem>
-                          </RadioGroup>
-                        </FormControl>
-                      </FormItem>
-                    )}
-                  />
-
-                  {form.watch("pensionTier") === "4" && (
-                    <FormField
-                      control={form.control}
-                      name="completedMandatory"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
-                          <FormControl>
-                            <Checkbox
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="space-y-1 leading-none">
-                            <FormLabel>
-                              I have completed my mandatory 3% contributions for 10 years
-                            </FormLabel>
-                            <FormDescription>
-                              Tier IV members must contribute 3% of their salary until they complete 10 years of service
-                            </FormDescription>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                  )}
-
                   <FormField
                     control={form.control}
                     name="grossSalary"
@@ -281,6 +238,19 @@ const QPPSection = () => {
                     )}
                   />
 
+                  <div className="p-4 border rounded-lg bg-muted/30">
+                    <h3 className="font-medium mb-2">Your Pension Information</h3>
+                    <p className="text-sm mb-2">
+                      <strong>Pension Tier:</strong> Tier {pensionTier}
+                      {pensionTier === "4" && (
+                        <span> ({completedMandatory ? "Completed mandatory contributions" : "Still making mandatory contributions"})</span>
+                      )}
+                    </p>
+                    <p className="text-sm">
+                      You can update your pension tier in the Career Profile page under Job Information.
+                    </p>
+                  </div>
+
                   <Button type="submit" className="w-full">
                     <Save className="mr-2 h-4 w-4" />
                     Calculate & Save
@@ -296,7 +266,7 @@ const QPPSection = () => {
                       <p className="text-sm text-muted-foreground">Contribution Rate</p>
                       <p className="text-2xl font-bold">{contributionRate}%</p>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Based on your pension tier {form.getValues("pensionTier")} status
+                        Based on your pension tier {pensionTier} status
                       </p>
                     </div>
                     <div>

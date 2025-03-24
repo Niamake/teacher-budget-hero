@@ -1,4 +1,5 @@
-import React from 'react';
+
+import React, { useEffect } from 'react';
 import { InfoIcon } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,9 +15,86 @@ interface TaxFormProps {
   setTaxData: React.Dispatch<React.SetStateAction<TaxData>>;
 }
 
+// Import the calculate contribution function from QPPSection
+const calculateContribution = (
+  tier: string, 
+  completedMandatory: boolean, 
+  grossSalary: number
+): { rate: number, amount: number } => {
+  let rate = 0;
+
+  if (tier === "4") {
+    rate = completedMandatory ? 0 : 3;
+  } else if (tier === "5") {
+    rate = 3.5;
+  } else if (tier === "6") {
+    if (grossSalary <= 45000) {
+      rate = 3;
+    } else if (grossSalary <= 55000) {
+      rate = 3.5;
+    } else if (grossSalary <= 75000) {
+      rate = 4.5;
+    } else if (grossSalary <= 100000) {
+      rate = 5.75;
+    } else {
+      rate = 6;
+    }
+  }
+
+  const amount = grossSalary * (rate / 100);
+  return { rate, amount };
+};
+
 const TaxForm: React.FC<TaxFormProps> = ({ taxData, setTaxData }) => {
   const currentPerSessionRate = getCurrentPerSessionRate();
   const perSessionTotal = Number(taxData.perSessionHours || 0) * currentPerSessionRate;
+
+  // Automatically calculate QPP contribution when gross salary changes
+  useEffect(() => {
+    // Get pension tier from localStorage
+    const teacherProfile = localStorage.getItem('teacherProfile');
+    const qppData = localStorage.getItem('qppData');
+    
+    let pensionTier = "6"; // Default to tier 6
+    let completedMandatory = false;
+    
+    // Try to get pension tier from profile first
+    if (teacherProfile) {
+      try {
+        const profileData = JSON.parse(teacherProfile);
+        if (profileData.pensionTier) {
+          pensionTier = profileData.pensionTier;
+          completedMandatory = profileData.completedMandatory || false;
+        }
+      } catch (error) {
+        console.error("Failed to parse teacher profile:", error);
+      }
+    }
+    
+    // If not in profile, try to get from QPP data
+    if (!pensionTier && qppData) {
+      try {
+        const parsedData = JSON.parse(qppData);
+        if (parsedData.pensionTier) {
+          pensionTier = parsedData.pensionTier;
+          completedMandatory = parsedData.completedMandatory || false;
+        }
+      } catch (error) {
+        console.error("Failed to parse QPP data:", error);
+      }
+    }
+    
+    // Calculate QPP contribution based on pension tier and salary
+    const grossSalary = Number(taxData.grossSalary) || 0;
+    const { amount } = calculateContribution(pensionTier, completedMandatory, grossSalary);
+    
+    // Update the QPP contribution in taxData
+    setTaxData(prev => ({
+      ...prev,
+      qppContribution: amount.toFixed(2)
+    }));
+    
+  }, [taxData.grossSalary, setTaxData]);
 
   return (
     <Card className="mb-8">
@@ -55,12 +133,12 @@ const TaxForm: React.FC<TaxFormProps> = ({ taxData, setTaxData }) => {
                 id="qpp-contribution"
                 type="number"
                 placeholder="0.00"
-                className="pl-8"
+                className="pl-8 bg-muted/50"
                 value={taxData.qppContribution}
-                onChange={(e) => setTaxData({ ...taxData, qppContribution: e.target.value })}
+                readOnly
               />
             </div>
-            <p className="text-xs text-muted-foreground">Based on your pension tier and salary</p>
+            <p className="text-xs text-muted-foreground">Automatically calculated based on your pension tier and salary</p>
           </div>
           
           <div className="space-y-2">
