@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Briefcase, Clock, School, GraduationCap, BookOpen } from 'lucide-react';
+import { Briefcase, Clock, School, GraduationCap, BookOpen, Shield } from 'lucide-react';
 import PensionTierForm from '@/components/job/PensionTierForm';
 import SalaryInformationForm from '@/components/job/SalaryInformationForm';
 
