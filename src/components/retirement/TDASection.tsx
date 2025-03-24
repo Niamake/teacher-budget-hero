@@ -232,7 +232,7 @@ const TDASection = ({ savedData, onSave }: TDASectionProps) => {
                 ))}
               </div>
               
-              <div className="h-[300px] w-full">
+              <div className="h-[450px] w-full">
                 <ChartContainer
                   config={{
                     balance: {
