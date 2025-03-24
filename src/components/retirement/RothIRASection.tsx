@@ -248,7 +248,7 @@ const RothIRASection = ({ savedData, onSave }: RothIRASectionProps) => {
                   ))}
                 </div>
                 
-                <div className="h-[400px] w-full">
+                <div className="h-[450px] w-full">
                   <ChartContainer
                     config={{
                       balance: {
