@@ -1,5 +1,4 @@
-
-import React, { useEffect } from 'react';
+import React from 'react';
 import { InfoIcon } from 'lucide-react';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -18,24 +17,6 @@ interface TaxFormProps {
 const TaxForm: React.FC<TaxFormProps> = ({ taxData, setTaxData }) => {
   const currentPerSessionRate = getCurrentPerSessionRate();
   const perSessionTotal = Number(taxData.perSessionHours || 0) * currentPerSessionRate;
-
-  useEffect(() => {
-    // Auto-load QPP contribution if available
-    const qppData = localStorage.getItem('qppData');
-    if (qppData) {
-      try {
-        const parsedData = JSON.parse(qppData);
-        if (parsedData.contributionAmount && parsedData.contributionAmount > 0) {
-          setTaxData(prevData => ({
-            ...prevData,
-            qppContribution: parsedData.contributionAmount.toString()
-          }));
-        }
-      } catch (error) {
-        console.error("Failed to parse QPP data:", error);
-      }
-    }
-  }, []);
 
   return (
     <Card className="mb-8">
@@ -79,7 +60,7 @@ const TaxForm: React.FC<TaxFormProps> = ({ taxData, setTaxData }) => {
                 onChange={(e) => setTaxData({ ...taxData, qppContribution: e.target.value })}
               />
             </div>
-            <p className="text-xs text-muted-foreground">Auto-calculated based on your pension tier and salary</p>
+            <p className="text-xs text-muted-foreground">Based on your pension tier and salary</p>
           </div>
           
           <div className="space-y-2">
