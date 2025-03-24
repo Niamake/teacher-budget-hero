@@ -1,11 +1,11 @@
+
 import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Briefcase } from 'lucide-react';
+import { Briefcase, Clock, School, GraduationCap, BookOpen } from 'lucide-react';
 import PensionTierForm from '@/components/job/PensionTierForm';
-
-// Add more imports as needed for your components
+import SalaryInformationForm from '@/components/job/SalaryInformationForm';
 
 const JobInfo = () => {
   useEffect(() => {
@@ -28,13 +28,24 @@ const JobInfo = () => {
           <div className="space-y-8">
             <Card>
               <CardHeader>
-                <CardTitle>Employment Details</CardTitle>
+                <CardTitle>Salary Information</CardTitle>
                 <CardDescription>
-                  Information about your current position, certification, and school details
+                  Details that determine your salary according to the UFT salary schedule
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                {/* Your existing job information fields would go here */}
+                <SalaryInformationForm />
+              </CardContent>
+            </Card>
+            
+            <Card>
+              <CardHeader>
+                <CardTitle>Pension Information</CardTitle>
+                <CardDescription>
+                  Your pension tier and mandatory contribution details
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
                 <PensionTierForm />
               </CardContent>
             </Card>
