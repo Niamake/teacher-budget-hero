@@ -74,7 +74,7 @@ const SalaryEstimate = ({ teacherProfile, onSalaryEstimated }: SalaryEstimatePro
   return (
     <Card className="mb-8">
       <CardHeader>
-        <CardTitle>Estimated Salary</CardTitle>
+        <CardTitle>Salary</CardTitle>
         <CardDescription>
           Based on your job profile, tenure, and the current UFT salary schedule (effective {currentSchedule.description}).
         </CardDescription>

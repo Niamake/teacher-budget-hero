@@ -14,7 +14,7 @@ const BudgetTools = () => {
   const [budgetData, setBudgetData] = useState<any>({
     takeHomeAnnual: 0,
     takeHomeMonthly: 0,
-    takeHomeBiweekly: 0
+    takeHomeSemiMonthly: 0
   });
   const [paycheck, setPaycheck] = useState<string>("");
   
@@ -27,8 +27,8 @@ const BudgetTools = () => {
         setBudgetData(parsedData);
         
         // Set initial paycheck amount from the semi-monthly take-home pay
-        if (parsedData.takeHomeBiweekly) {
-          setPaycheck(Math.round(parsedData.takeHomeBiweekly).toString());
+        if (parsedData.takeHomeSemiMonthly) {
+          setPaycheck(Math.round(parsedData.takeHomeSemiMonthly).toString());
         }
       } catch (error) {
         console.error("Failed to parse budget data:", error);
@@ -57,7 +57,7 @@ const BudgetTools = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {budgetData.takeHomeBiweekly ? (
+          {budgetData.takeHomeSemiMonthly ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-muted rounded-lg p-4">
@@ -75,7 +75,7 @@ const BudgetTools = () => {
                 <div className="bg-muted rounded-lg p-4">
                   <p className="text-sm font-medium text-muted-foreground mb-2">Semi-Monthly Paycheck</p>
                   <p className="text-2xl md:text-3xl font-bold">
-                    {formatCurrency(budgetData.takeHomeBiweekly)}
+                    {formatCurrency(budgetData.takeHomeSemiMonthly)}
                   </p>
                 </div>
               </div>

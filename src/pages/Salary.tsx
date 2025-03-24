@@ -18,6 +18,7 @@ const Salary = () => {
   const [teacherProfile, setTeacherProfile] = useState<any>(null);
   const [extraIncome, setExtraIncome] = useState<string>("");
   const [perSessionHours, setPerSessionHours] = useState<string>("");
+  const [bonusPay, setBonusPay] = useState<string>("");
   
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,6 +37,7 @@ const Salary = () => {
         const parsedData = JSON.parse(storedBudgetData);
         setExtraIncome(parsedData.extraIncome || "");
         setPerSessionHours(parsedData.perSessionHours || "");
+        setBonusPay(parsedData.bonusPay || "");
       } catch (error) {
         console.error("Failed to parse budget data:", error);
       }
@@ -59,20 +61,23 @@ const Salary = () => {
   
   const handleExtraIncomeChange = (value: string) => {
     setExtraIncome(value);
-    const budgetData = JSON.parse(localStorage.getItem('budgetData') || '{}');
-    const updatedData = { ...budgetData, extraIncome: value };
-    localStorage.setItem('budgetData', JSON.stringify(updatedData));
+    updateBudgetData({ extraIncome: value });
   };
   
   const handlePerSessionHoursChange = (value: string) => {
     setPerSessionHours(value);
-    const budgetData = JSON.parse(localStorage.getItem('budgetData') || '{}');
-    const updatedData = { ...budgetData, perSessionHours: value };
-    localStorage.setItem('budgetData', JSON.stringify(updatedData));
+    updateBudgetData({ perSessionHours: value });
   };
   
-  const handleRecalculateTaxes = () => {
-    navigate('/tax-estimate');
+  const handleBonusPayChange = (value: string) => {
+    setBonusPay(value);
+    updateBudgetData({ bonusPay: value });
+  };
+  
+  const updateBudgetData = (newValues: Record<string, string>) => {
+    const budgetData = JSON.parse(localStorage.getItem('budgetData') || '{}');
+    const updatedData = { ...budgetData, ...newValues };
+    localStorage.setItem('budgetData', JSON.stringify(updatedData));
   };
   
   const perSessionRate = getCurrentPerSessionRate();
@@ -106,7 +111,7 @@ const Salary = () => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-6">
-                  <div className="grid gap-6 md:grid-cols-2">
+                  <div className="grid gap-6 md:grid-cols-3">
                     <div className="space-y-2">
                       <Label htmlFor="extra-income">Additional Annual Income</Label>
                       <div className="relative">
@@ -121,6 +126,22 @@ const Salary = () => {
                         />
                       </div>
                       <p className="text-xs text-muted-foreground">Income not from your teaching position</p>
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="bonus-pay">School Bonus Pay</Label>
+                      <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">$</span>
+                        <Input
+                          id="bonus-pay"
+                          type="number"
+                          placeholder="0"
+                          className="pl-8"
+                          value={bonusPay}
+                          onChange={(e) => handleBonusPayChange(e.target.value)}
+                        />
+                      </div>
+                      <p className="text-xs text-muted-foreground">6th period, stimulus, crowdfunding, etc.</p>
                     </div>
                     
                     <div className="space-y-2">
@@ -142,24 +163,14 @@ const Salary = () => {
                       </div>
                     </div>
                   </div>
-                  
-                  {(extraIncome || perSessionHours) && (
-                    <div className="text-center mt-4">
-                      <p className="text-sm mb-2">You've added additional income. Recalculate your taxes to see the impact on take-home pay.</p>
-                      <Button onClick={handleRecalculateTaxes} className="mt-2">
-                        <BadgeDollarSign className="h-4 w-4 mr-2" />
-                        Recalculate Taxes
-                      </Button>
-                    </div>
-                  )}
                 </CardContent>
               </Card>
               
+              <BudgetTools />
               <SalaryEstimate 
                 teacherProfile={teacherProfile} 
                 onSalaryEstimated={handleSalaryEstimated}
               />
-              <BudgetTools />
             </>
           )}
         </div>
