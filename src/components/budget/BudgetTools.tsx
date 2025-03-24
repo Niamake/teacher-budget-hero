@@ -1,7 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
@@ -29,6 +29,9 @@ const BudgetTools = () => {
         // Set initial paycheck amount from the semi-monthly take-home pay
         if (parsedData.takeHomeSemiMonthly) {
           setPaycheck(Math.round(parsedData.takeHomeSemiMonthly).toString());
+        } else if (parsedData.takeHomeBiweekly) {
+          // For backward compatibility with older data structure
+          setPaycheck(Math.round(parsedData.takeHomeBiweekly).toString());
         }
       } catch (error) {
         console.error("Failed to parse budget data:", error);
@@ -57,7 +60,7 @@ const BudgetTools = () => {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {budgetData.takeHomeSemiMonthly ? (
+          {(budgetData.takeHomeSemiMonthly > 0 || budgetData.takeHomeBiweekly > 0) ? (
             <>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-muted rounded-lg p-4">
@@ -75,7 +78,7 @@ const BudgetTools = () => {
                 <div className="bg-muted rounded-lg p-4">
                   <p className="text-sm font-medium text-muted-foreground mb-2">Semi-Monthly Paycheck</p>
                   <p className="text-2xl md:text-3xl font-bold">
-                    {formatCurrency(budgetData.takeHomeSemiMonthly)}
+                    {formatCurrency(budgetData.takeHomeSemiMonthly || budgetData.takeHomeBiweekly)}
                   </p>
                 </div>
               </div>

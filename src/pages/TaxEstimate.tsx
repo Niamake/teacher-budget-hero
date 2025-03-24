@@ -112,7 +112,7 @@ const TaxEstimate = () => {
       const budgetData = {
         takeHomeAnnual: results.takeHome.annual,
         takeHomeMonthly: results.takeHome.monthly,
-        takeHomeBiweekly: results.takeHome.biweekly,
+        takeHomeSemiMonthly: results.takeHome.biweekly, // Store as semi-monthly for consistency
         extraIncome: taxData.extraIncome || "",
         perSessionHours: taxData.perSessionHours || ""
       };
