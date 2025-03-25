@@ -1,6 +1,7 @@
+
 import { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, Wallet, Briefcase, LineChart, Calculator } from 'lucide-react';
+import { ChevronRight, BarChart3, Briefcase, LineChart, Calculator, DollarSign } from 'lucide-react';
 
 interface Feature {
   title: string;
@@ -15,32 +16,39 @@ const Features = () => {
 
   const features: Feature[] = [
     {
+      title: "Salary Estimator",
+      description: "Store and estimate your salary based on your salary step, education, and years of experience as an NYC teacher.",
+      icon: DollarSign,
+      path: "/salary",
+      color: "bg-blue-50 text-blue-600"
+    },
+    {
       title: "Budget Management",
       description: "Create and track your monthly budget with tools tailored to a teacher's salary structure and pay schedule.",
-      icon: Wallet,
-      path: "/budget",
-      color: "bg-blue-50 text-blue-600"
+      icon: BarChart3,
+      path: "/budgeting",
+      color: "bg-purple-50 text-purple-600"
     },
     {
       title: "Job Information",
       description: "Store and organize your teaching credentials, salary steps, longevity bonuses, and career advancement opportunities.",
       icon: Briefcase,
       path: "/job-info",
-      color: "bg-purple-50 text-purple-600"
+      color: "bg-green-50 text-green-600"
     },
     {
       title: "Retirement Planning",
       description: "Track your TRS pension progress, TDA investments, and other retirement accounts with specialized calculators.",
       icon: LineChart,
       path: "/retirement",
-      color: "bg-green-50 text-green-600"
+      color: "bg-rose-50 text-rose-600"
     },
     {
       title: "Tax Estimation",
       description: "Get a clearer picture of your tax obligations with calculators designed for NYC teachers' unique tax situations.",
       icon: Calculator,
       path: "/tax-estimate",
-      color: "bg-rose-50 text-rose-600"
+      color: "bg-amber-50 text-amber-600"
     }
   ];
 

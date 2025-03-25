@@ -1,13 +1,25 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
-import { Link, useLocation } from 'react-router-dom';
+import { Menu, X, UserCircle, LogOut, Settings } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { toast } from 'sonner';
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { name: 'Salary', path: '/salary' },
@@ -42,6 +54,36 @@ const Header = () => {
   const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
   const closeMobileMenu = () => setIsMobileMenuOpen(false);
   
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+      toast.success("Logged out successfully");
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+      toast.error("Error signing out");
+    }
+  };
+  
+  const getUserInitials = () => {
+    if (!user) return "U";
+    
+    // Try to get initials from metadata first
+    const firstName = user.user_metadata?.first_name || '';
+    const lastName = user.user_metadata?.last_name || '';
+    
+    if (firstName && lastName) {
+      return `${firstName[0]}${lastName[0]}`.toUpperCase();
+    }
+    
+    // Fallback to email
+    if (user.email) {
+      return user.email[0].toUpperCase();
+    }
+    
+    return "U";
+  };
+  
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -75,15 +117,60 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            <Button 
-              variant="ghost" 
-              className="text-sm font-medium"
-            >
-              Log In
-            </Button>
-            <Button className="text-sm font-medium bg-primary hover:bg-primary/90">
-              Sign Up
-            </Button>
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0" aria-label="User menu">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src="" alt={user.email || ''} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {getUserInitials()}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <div className="flex flex-col space-y-1 p-2">
+                    <p className="text-sm font-medium">{user.user_metadata?.first_name} {user.user_metadata?.last_name}</p>
+                    <p className="text-xs text-muted-foreground">{user.email}</p>
+                  </div>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/profile" className="cursor-pointer">
+                      <UserCircle className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/settings" className="cursor-pointer">
+                      <Settings className="mr-2 h-4 w-4" />
+                      <span>Settings</span>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <>
+                <Button 
+                  variant="ghost" 
+                  className="text-sm font-medium"
+                  onClick={() => navigate('/auth')}
+                >
+                  Log In
+                </Button>
+                <Button 
+                  className="text-sm font-medium bg-primary hover:bg-primary/90"
+                  onClick={() => navigate('/auth?tab=signup')}
+                >
+                  Sign Up
+                </Button>
+              </>
+            )}
           </div>
 
           <button
@@ -117,15 +204,72 @@ const Header = () => {
             </Link>
           ))}
           <hr className="border-border my-4" />
-          <Button 
-            variant="ghost" 
-            className="justify-start text-lg font-medium"
-          >
-            Log In
-          </Button>
-          <Button className="justify-start text-lg font-medium">
-            Sign Up
-          </Button>
+          
+          {user ? (
+            <>
+              <div className="flex items-center space-x-3 py-2">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src="" alt={user.email || ''} />
+                  <AvatarFallback className="bg-primary/10 text-primary">
+                    {getUserInitials()}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col">
+                  <p className="text-sm font-medium">{user.user_metadata?.first_name} {user.user_metadata?.last_name}</p>
+                  <p className="text-xs text-muted-foreground">{user.email}</p>
+                </div>
+              </div>
+              <Link 
+                to="/profile" 
+                className="flex items-center text-foreground/80"
+                onClick={closeMobileMenu}
+              >
+                <UserCircle className="mr-2 h-5 w-5" />
+                Profile
+              </Link>
+              <Link 
+                to="/settings" 
+                className="flex items-center text-foreground/80"
+                onClick={closeMobileMenu}
+              >
+                <Settings className="mr-2 h-5 w-5" />
+                Settings
+              </Link>
+              <Button 
+                variant="destructive" 
+                className="justify-start text-lg font-medium"
+                onClick={() => {
+                  handleSignOut();
+                  closeMobileMenu();
+                }}
+              >
+                <LogOut className="mr-2 h-5 w-5" />
+                Log Out
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button 
+                variant="ghost" 
+                className="justify-start text-lg font-medium"
+                onClick={() => {
+                  navigate('/auth');
+                  closeMobileMenu();
+                }}
+              >
+                Log In
+              </Button>
+              <Button 
+                className="justify-start text-lg font-medium"
+                onClick={() => {
+                  navigate('/auth?tab=signup');
+                  closeMobileMenu();
+                }}
+              >
+                Sign Up
+              </Button>
+            </>
+          )}
         </nav>
       </div>
     </header>

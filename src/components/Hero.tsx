@@ -46,7 +46,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="w-full sm:w-auto text-base font-medium px-8 py-6 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => navigate('/budget')}
+              onClick={() => navigate('/auth')}
             >
               Get Started
               <ArrowRight className="ml-2 h-5 w-5" />
@@ -55,27 +55,37 @@ const Hero = () => {
               variant="outline" 
               size="lg" 
               className="w-full sm:w-auto text-base font-medium px-8 py-6 border-2"
+              onClick={() => {
+                const featuresSection = document.querySelector('#features');
+                if (featuresSection) {
+                  featuresSection.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
             >
               Learn More
             </Button>
           </div>
 
-          <div className={`mt-20 grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-12 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100' : 'opacity-0 transform translate-y-8'}`}>
-            <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-primary">100%</div>
-              <p className="text-sm text-foreground/60 mt-2">Tailored for NYC Teachers</p>
-            </div>
+          <div className={`mt-20 grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100' : 'opacity-0 transform translate-y-8'}`}>
             <div className="flex flex-col items-center">
               <div className="text-3xl font-bold text-primary">5</div>
               <p className="text-sm text-foreground/60 mt-2">Financial Tools</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="text-3xl font-bold text-primary">TRS</div>
-              <p className="text-sm text-foreground/60 mt-2">Pension Tracking</p>
+              <p className="text-sm text-foreground/60 mt-2">Pension Planning</p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-primary">403(b)</div>
-              <p className="text-sm text-foreground/60 mt-2">Retirement Planning</p>
+              <div className="text-3xl font-bold text-primary">TDA</div>
+              <p className="text-sm text-foreground/60 mt-2">Investment Tracking</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-3xl font-bold text-primary">Tax</div>
+              <p className="text-sm text-foreground/60 mt-2">Tax Estimation</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="text-3xl font-bold text-primary">100%</div>
+              <p className="text-sm text-foreground/60 mt-2">NYC Teacher Focused</p>
             </div>
           </div>
         </div>

@@ -8,6 +8,15 @@ import Footer from '@/components/Footer';
 const Index = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
+    
+    // Check for URL params that might indicate scrolling to features
+    const hash = window.location.hash;
+    if (hash === '#features') {
+      const featuresElement = document.getElementById('features');
+      if (featuresElement) {
+        featuresElement.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
   }, []);
 
   return (
@@ -15,7 +24,9 @@ const Index = () => {
       <Header />
       <main className="flex-grow">
         <Hero />
-        <Features />
+        <div id="features">
+          <Features />
+        </div>
       </main>
       <Footer />
     </div>
