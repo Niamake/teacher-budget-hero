@@ -72,12 +72,12 @@ const Hero = () => {
               <p className="text-sm text-foreground/60 mt-2">Financial Tools</p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-primary">TRS</div>
-              <p className="text-sm text-foreground/60 mt-2">Pension Planning</p>
+              <div className="text-3xl font-bold text-primary">1 on 1</div>
+              <p className="text-sm text-foreground/60 mt-2">Financial Coaching</p>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-primary">TDA</div>
-              <p className="text-sm text-foreground/60 mt-2">Investment Tracking</p>
+              <div className="text-3xl font-bold text-primary">Retirement</div>
+              <p className="text-sm text-foreground/60 mt-2">Contribution Tracking</p>
             </div>
             <div className="flex flex-col items-center">
               <div className="text-3xl font-bold text-primary">Tax</div>

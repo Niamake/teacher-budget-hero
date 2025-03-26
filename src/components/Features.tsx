@@ -63,7 +63,7 @@ const Features = () => {
           }
         });
       },
-      { threshold: 0.1 }
+      { threshold: 0.1, rootMargin: '0px 0px -100px 0px' }
     );
 
     const featureElements = document.querySelectorAll('.feature-card');
@@ -98,17 +98,18 @@ const Features = () => {
             <Link
               key={index}
               to={feature.path}
-              className="feature-card opacity-0 group"
+              aria-label={`Explore ${feature.title}`}
+              className="feature-card opacity-0 group focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-2xl"
               style={{ animationDelay: `${index * 100}ms` }}
             >
               <div className="glass-card h-full p-8 hover:shadow-lg hover:translate-y-[-5px]">
-                <div className={`${feature.color} w-12 h-12 rounded-xl flex items-center justify-center mb-6`}>
+                <div className={`${feature.color} w-12 h-12 rounded-xl flex items-center justify-center mb-6`} aria-hidden="true">
                   <feature.icon size={24} />
                 </div>
                 <h3 className="text-xl font-semibold mb-3">{feature.title}</h3>
                 <p className="text-foreground/70 mb-6">{feature.description}</p>
                 <div className="flex items-center text-primary font-medium group-hover:translate-x-1 transition-transform duration-200">
-                  Explore <ChevronRight size={16} className="ml-1" />
+                  Explore <ChevronRight size={16} className="ml-1" aria-hidden="true" />
                 </div>
               </div>
             </Link>

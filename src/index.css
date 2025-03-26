@@ -83,15 +83,55 @@
     @apply border-border;
   }
 
-  body {
-    @apply bg-background text-foreground font-sans antialiased;
+  html {
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
   }
 
+  body {
+    @apply bg-background text-foreground font-sans antialiased min-h-screen;
+    text-rendering: optimizeLegibility;
+  }
+
+  /* Improve font rendering */
   h1, h2, h3, h4, h5, h6 {
     @apply font-display tracking-tight;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  /* Focus styles for accessibility */
+  *:focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-1;
+  }
+
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
   }
 }
 
+/* Responsive typography */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  
+  .text-pretty {
+    text-wrap: pretty;
+  }
+}
+
+/* Glass morphism */
 .glass-morphism {
   @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
 }
@@ -112,6 +152,7 @@
   @apply bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent;
 }
 
+/* Enhanced animations */
 .page-transition-enter {
   opacity: 0;
   transform: translateY(10px);
@@ -133,6 +174,7 @@
   transition: opacity 300ms, transform 300ms;
 }
 
+/* Improved scrollbars */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -149,4 +191,49 @@
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive image */
+.responsive-img {
+  @apply max-w-full h-auto;
+}
+
+/* Utility for visually hidden elements (for screen readers) */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+}
+
+/* Utility for reducing motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Fix issue with Sonner toast */
+.Toaster__toast {
+  @apply !rounded-lg !shadow-lg;
+}
+
+/* Fix for clipped shadows */
+.card-with-hover {
+  @apply transition-all duration-300 hover:shadow-xl z-10 relative;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Improved focus outlines for keyboard navigation */
+.keyboard-focus:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2;
+}
+
+/* Fix TS2724 issue with @/components/ui/sonner */
+.sonner-toast-container {
+  --toast-border: var(--border);
+  --toast-background: var(--background);
+  --toast-foreground: var(--foreground);
 }
