@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '@/components/Header';
@@ -19,8 +18,8 @@ import { supabase } from '@/integrations/supabase/client';
 
 interface ProfileData {
   id: string;
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   teacher_id: string | null;
   school: string | null;
   avatar_url: string | null;
@@ -43,7 +42,6 @@ const ProfilePage = () => {
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [activeTab, setActiveTab] = useState('overview');
   
-  // This would normally come from API but for demonstration we'll use mock data
   const [financialData, setFinancialData] = useState<FinancialData>({
     salary: 75000,
     tda_balance: 48000,
@@ -89,8 +87,22 @@ const ProfilePage = () => {
   }, [user, navigate]);
 
   const getUserInitials = () => {
-    if (!profileData) return user?.email?.[0].toUpperCase() || 'U';
-    return `${profileData.first_name[0]}${profileData.last_name[0]}`.toUpperCase();
+    if (!profileData) {
+      return user?.email?.[0]?.toUpperCase() || 'U';
+    }
+    
+    const firstName = profileData.first_name || '';
+    const lastName = profileData.last_name || '';
+    
+    if (firstName && lastName) {
+      return `${firstName[0]}${lastName[0]}`.toUpperCase();
+    } else if (firstName) {
+      return firstName[0].toUpperCase();
+    } else if (lastName) {
+      return lastName[0].toUpperCase();
+    }
+    
+    return user?.email?.[0]?.toUpperCase() || 'U';
   };
 
   if (loading) {
@@ -114,7 +126,6 @@ const ProfilePage = () => {
       <Header />
       <main className="flex-grow container max-w-5xl mx-auto px-4 py-20">
         <div className="space-y-8">
-          {/* Profile Header */}
           <Card className="glass-card">
             <CardContent className="p-6">
               <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
@@ -126,7 +137,7 @@ const ProfilePage = () => {
                 </Avatar>
                 
                 <div className="flex-1 space-y-2 text-center md:text-left">
-                  <h1 className="text-2xl font-bold">{profileData?.first_name} {profileData?.last_name}</h1>
+                  <h1 className="text-2xl font-bold">{profileData?.first_name || ''} {profileData?.last_name || ''}</h1>
                   <div className="flex flex-wrap justify-center md:justify-start gap-2">
                     <Badge variant="outline" className="flex items-center gap-1">
                       <Briefcase className="h-3 w-3" />
@@ -155,7 +166,6 @@ const ProfilePage = () => {
             </CardContent>
           </Card>
           
-          {/* Tabs */}
           <Tabs value={activeTab} onValueChange={setActiveTab}>
             <TabsList className="grid grid-cols-3 mb-8">
               <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -163,10 +173,8 @@ const ProfilePage = () => {
               <TabsTrigger value="education">Education</TabsTrigger>
             </TabsList>
             
-            {/* Overview Tab */}
             <TabsContent value="overview" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Salary Card */}
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
@@ -180,7 +188,6 @@ const ProfilePage = () => {
                   </CardContent>
                 </Card>
                 
-                {/* Pension Status */}
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
@@ -195,7 +202,6 @@ const ProfilePage = () => {
                 </Card>
               </div>
               
-              {/* Notifications */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -227,10 +233,8 @@ const ProfilePage = () => {
               </Card>
             </TabsContent>
             
-            {/* Financial Tab */}
             <TabsContent value="finance" className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* TDA Balance */}
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
@@ -244,7 +248,6 @@ const ProfilePage = () => {
                   </CardContent>
                 </Card>
                 
-                {/* QPP Balance */}
                 <Card>
                   <CardHeader className="pb-2">
                     <CardTitle className="text-lg flex items-center gap-2">
@@ -259,7 +262,6 @@ const ProfilePage = () => {
                 </Card>
               </div>
               
-              {/* Student Loans */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -285,7 +287,6 @@ const ProfilePage = () => {
                 </CardContent>
               </Card>
               
-              {/* Pay Differentials */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -310,7 +311,6 @@ const ProfilePage = () => {
               </Card>
             </TabsContent>
             
-            {/* Education Tab */}
             <TabsContent value="education" className="space-y-6">
               <Card>
                 <CardHeader>
@@ -342,7 +342,6 @@ const ProfilePage = () => {
                 </CardContent>
               </Card>
               
-              {/* CTLE Hours */}
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
