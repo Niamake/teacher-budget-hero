@@ -85,6 +85,13 @@ const Header = () => {
     
     return "U";
   };
+
+  const handleAuthNavigation = (path) => {
+    // Store current location to redirect back after auth
+    localStorage.setItem('redirectAfterAuth', location.pathname);
+    navigate(path);
+    closeMobileMenu();
+  };
   
   return (
     <header 
@@ -123,73 +130,78 @@ const Header = () => {
           </nav>
 
           <div className="hidden md:flex items-center space-x-4">
-            {user ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0" aria-label="User menu">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src="" alt={user.email || ''} />
-                      <AvatarFallback className="bg-primary/10 text-primary">
-                        {getUserInitials()}
-                      </AvatarFallback>
-                    </Avatar>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56" align="end" forceMount>
-                  <div className="flex flex-col space-y-1 p-2">
-                    <p className="text-sm font-medium">{user.user_metadata?.first_name} {user.user_metadata?.last_name}</p>
-                    <p className="text-xs text-muted-foreground">{user.email}</p>
-                  </div>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/profile" className="cursor-pointer">
-                      <UserCircle className="mr-2 h-4 w-4" />
-                      <span>Profile</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link to="/settings" className="cursor-pointer">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
-                    </Link>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
-                    {theme === 'dark' ? (
-                      <>
-                        <Sun className="mr-2 h-4 w-4" />
-                        <span>Light Mode</span>
-                      </>
-                    ) : (
-                      <>
-                        <Moon className="mr-2 h-4 w-4" />
-                        <span>Dark Mode</span>
-                      </>
-                    )}
-                  </DropdownMenuItem>
-                  <DropdownMenuSeparator />
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" className="relative h-9 w-9 rounded-full p-0" aria-label="User menu">
+                  <Avatar className="h-9 w-9">
+                    <AvatarImage src="" alt={user?.email || 'Guest user'} />
+                    <AvatarFallback className="bg-primary/10 text-primary">
+                      {user ? getUserInitials() : "G"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56" align="end" forceMount>
+                {user ? (
+                  <>
+                    <div className="flex flex-col space-y-1 p-2">
+                      <p className="text-sm font-medium">{user.user_metadata?.first_name} {user.user_metadata?.last_name}</p>
+                      <p className="text-xs text-muted-foreground">{user.email}</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="cursor-pointer">
+                        <UserCircle className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/settings" className="cursor-pointer">
+                        <Settings className="mr-2 h-4 w-4" />
+                        <span>Settings</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                ) : (
+                  <>
+                    <div className="flex flex-col space-y-1 p-2">
+                      <p className="text-sm font-medium">Guest User</p>
+                      <p className="text-xs text-muted-foreground">Not signed in</p>
+                    </div>
+                    <DropdownMenuSeparator />
+                  </>
+                )}
+                <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
+                  {theme === 'dark' ? (
+                    <>
+                      <Sun className="mr-2 h-4 w-4" />
+                      <span>Light Mode</span>
+                    </>
+                  ) : (
+                    <>
+                      <Moon className="mr-2 h-4 w-4" />
+                      <span>Dark Mode</span>
+                    </>
+                  )}
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                {user ? (
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>
                   </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            ) : (
-              <>
-                <Button 
-                  variant="ghost" 
-                  className="text-sm font-medium"
-                  onClick={() => navigate('/auth')}
-                >
-                  Log In
-                </Button>
-                <Button 
-                  className="text-sm font-medium bg-primary hover:bg-primary/90"
-                  onClick={() => navigate('/auth?tab=signup')}
-                >
-                  Sign Up
-                </Button>
-              </>
-            )}
+                ) : (
+                  <>
+                    <DropdownMenuItem onClick={() => handleAuthNavigation('/auth')} className="cursor-pointer">
+                      <span>Log In</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => handleAuthNavigation('/auth?tab=signup')} className="cursor-pointer">
+                      <span>Sign Up</span>
+                    </DropdownMenuItem>
+                  </>
+                )}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
 
           <button
@@ -254,59 +266,55 @@ const Header = () => {
                 <Settings className="mr-2 h-5 w-5" />
                 Settings
               </Link>
-              <button
-                className="flex items-center text-foreground/80 w-full text-left"
-                onClick={() => {
-                  toggleTheme();
-                  closeMobileMenu();
-                }}
-              >
-                {theme === 'dark' ? (
-                  <>
-                    <Sun className="mr-2 h-5 w-5" />
-                    Light Mode
-                  </>
-                ) : (
-                  <>
-                    <Moon className="mr-2 h-5 w-5" />
-                    Dark Mode
-                  </>
-                )}
-              </button>
-              <Button 
-                variant="destructive" 
-                className="justify-start text-lg font-medium"
-                onClick={() => {
-                  handleSignOut();
-                  closeMobileMenu();
-                }}
-              >
-                <LogOut className="mr-2 h-5 w-5" />
-                Log Out
-              </Button>
             </>
           ) : (
             <>
               <Button 
                 variant="ghost" 
                 className="justify-start text-lg font-medium"
-                onClick={() => {
-                  navigate('/auth');
-                  closeMobileMenu();
-                }}
+                onClick={() => handleAuthNavigation('/auth')}
               >
                 Log In
               </Button>
               <Button 
                 className="justify-start text-lg font-medium"
-                onClick={() => {
-                  navigate('/auth?tab=signup');
-                  closeMobileMenu();
-                }}
+                onClick={() => handleAuthNavigation('/auth?tab=signup')}
               >
                 Sign Up
               </Button>
             </>
+          )}
+          <button
+            className="flex items-center text-foreground/80 w-full text-left"
+            onClick={() => {
+              toggleTheme();
+              closeMobileMenu();
+            }}
+          >
+            {theme === 'dark' ? (
+              <>
+                <Sun className="mr-2 h-5 w-5" />
+                Light Mode
+              </>
+            ) : (
+              <>
+                <Moon className="mr-2 h-5 w-5" />
+                Dark Mode
+              </>
+            )}
+          </button>
+          {user && (
+            <Button 
+              variant="destructive" 
+              className="justify-start text-lg font-medium"
+              onClick={() => {
+                handleSignOut();
+                closeMobileMenu();
+              }}
+            >
+              <LogOut className="mr-2 h-5 w-5" />
+              Log Out
+            </Button>
           )}
         </nav>
       </div>
