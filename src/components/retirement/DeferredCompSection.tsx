@@ -304,7 +304,7 @@ const DeferredCompSection = ({ savedData, onSave }: DeferredCompSectionProps) =>
               </div>
               
               {/* Separate card for the detailed projection table */}
-              <Card className="mt-6">
+              <Card className="mt-4">
                 <CardHeader className="pb-3">
                   <div className="flex items-center gap-2">
                     <TableIcon className="h-5 w-5 text-primary" />
