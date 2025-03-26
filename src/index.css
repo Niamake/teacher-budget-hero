@@ -240,13 +240,13 @@
 
 /* Custom dark mode adjustments */
 .dark .glass-card {
-  @apply bg-gray-900/70 border-gray-800/30;
+  @apply bg-gray-900/[0.70] border-gray-800/[0.30];
 }
 
-.dark .bg-primary-5 {
-  background-color: rgba(var(--primary), 0.05);
+.dark .bg-primary\/5 {
+  @apply bg-primary/[0.05];
 }
 
-.dark .bg-primary-10 {
-  background-color: rgba(var(--primary), 0.10);
+.dark .bg-primary\/10 {
+  @apply bg-primary/[0.10];
 }
