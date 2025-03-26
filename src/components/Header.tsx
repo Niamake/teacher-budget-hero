@@ -1,9 +1,10 @@
 
 import { useState, useEffect } from 'react';
-import { Menu, X, UserCircle, LogOut, Settings } from 'lucide-react';
+import { Menu, X, UserCircle, LogOut, Settings, Sun, Moon } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -20,6 +21,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const navItems = [
     { name: 'Salary', path: '/salary' },
@@ -87,7 +89,11 @@ const Header = () => {
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'bg-white/90 backdrop-blur-md shadow-sm' : 'bg-transparent'
+        isScrolled 
+          ? theme === 'dark' 
+            ? 'bg-gray-900/90 backdrop-blur-md shadow-sm' 
+            : 'bg-white/90 backdrop-blur-md shadow-sm' 
+          : 'bg-transparent'
       }`}
     >
       <div className="container mx-auto px-6 py-4">
@@ -146,6 +152,19 @@ const Header = () => {
                       <Settings className="mr-2 h-4 w-4" />
                       <span>Settings</span>
                     </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={toggleTheme} className="cursor-pointer">
+                    {theme === 'dark' ? (
+                      <>
+                        <Sun className="mr-2 h-4 w-4" />
+                        <span>Light Mode</span>
+                      </>
+                    ) : (
+                      <>
+                        <Moon className="mr-2 h-4 w-4" />
+                        <span>Dark Mode</span>
+                      </>
+                    )}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive">
@@ -235,6 +254,25 @@ const Header = () => {
                 <Settings className="mr-2 h-5 w-5" />
                 Settings
               </Link>
+              <button
+                className="flex items-center text-foreground/80 w-full text-left"
+                onClick={() => {
+                  toggleTheme();
+                  closeMobileMenu();
+                }}
+              >
+                {theme === 'dark' ? (
+                  <>
+                    <Sun className="mr-2 h-5 w-5" />
+                    Light Mode
+                  </>
+                ) : (
+                  <>
+                    <Moon className="mr-2 h-5 w-5" />
+                    Dark Mode
+                  </>
+                )}
+              </button>
               <Button 
                 variant="destructive" 
                 className="justify-start text-lg font-medium"

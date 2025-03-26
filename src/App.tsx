@@ -1,44 +1,42 @@
 
-import { Toaster } from "@/components/ui/toaster";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import { AuthProvider } from "@/contexts/AuthContext";
-import Index from "./pages/Index";
-import Salary from "./pages/Salary";
-import Budgeting from "./pages/Budgeting";
-import JobInfo from "./pages/JobInfo";
-import Retirement from "./pages/Retirement";
-import TaxEstimate from "./pages/TaxEstimate";
-import Auth from "./pages/Auth";
-import NotFound from "./pages/NotFound";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Index from './pages/Index';
+import Auth from './pages/Auth';
+import Salary from './pages/Salary';
+import Budgeting from './pages/Budgeting';
+import JobInfo from './pages/JobInfo';
+import Retirement from './pages/Retirement';
+import TaxEstimate from './pages/TaxEstimate';
+import NotFound from './pages/NotFound';
+import { Toaster } from 'sonner';
+import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+import ProfilePage from './pages/Profile';
+import SettingsPage from './pages/Settings';
+import './App.css';
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <AuthProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
+function App() {
+  return (
+    <BrowserRouter>
+      <ThemeProvider>
+        <AuthProvider>
+          <Toaster position="top-right" closeButton richColors />
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/salary" element={<Salary />} />
-            <Route path="/budget" element={<Navigate to="/salary" replace />} />
             <Route path="/budgeting" element={<Budgeting />} />
             <Route path="/job-info" element={<JobInfo />} />
             <Route path="/retirement" element={<Retirement />} />
-            <Route path="/pre-tax" element={<Navigate to="/tax-estimate" replace />} />
             <Route path="/tax-estimate" element={<TaxEstimate />} />
+            <Route path="/profile" element={<ProfilePage />} />
+            <Route path="/settings" element={<SettingsPage />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  );
+}
 
 export default App;

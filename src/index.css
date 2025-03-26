@@ -133,7 +133,7 @@
 
 /* Glass morphism */
 .glass-morphism {
-  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
+  @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm dark:bg-gray-900/70 dark:border-gray-800/30;
 }
 
 .glass-card {
@@ -145,11 +145,11 @@
 }
 
 .glass-button:hover {
-  @apply bg-white/80 shadow-md;
+  @apply bg-white/80 shadow-md dark:bg-gray-800/80;
 }
 
 .text-gradient {
-  @apply bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent;
+  @apply bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent dark:from-blue-400 dark:to-sky-300;
 }
 
 /* Enhanced animations */
@@ -185,12 +185,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 0, 0, 0.1);
+  @apply bg-gray-300 dark:bg-gray-700;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.2);
+  @apply bg-gray-400 dark:bg-gray-600;
 }
 
 /* Responsive image */
@@ -231,9 +231,22 @@
   @apply outline-none ring-2 ring-primary ring-offset-2;
 }
 
-/* Fix TS2724 issue with @/components/ui/sonner */
-.sonner-toast-container {
-  --toast-border: var(--border);
-  --toast-background: var(--background);
-  --toast-foreground: var(--foreground);
+/* Dark mode transitions */
+.dark * {
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 200ms;
+  transition-timing-function: ease-out;
+}
+
+/* Custom dark mode adjustments */
+.dark .glass-card {
+  @apply bg-gray-900/70 border-gray-800/30;
+}
+
+.dark .bg-primary/5 {
+  @apply bg-primary/10;
+}
+
+.dark .bg-primary/10 {
+  @apply bg-primary/20;
 }

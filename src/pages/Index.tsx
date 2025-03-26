@@ -58,7 +58,9 @@ const Index = () => {
       const links = [
         import('@/pages/Auth'),
         import('@/pages/Salary'),
-        import('@/pages/Budgeting')
+        import('@/pages/Budgeting'),
+        import('@/pages/Profile'),
+        import('@/pages/Settings')
       ];
       return Promise.all(links);
     };
