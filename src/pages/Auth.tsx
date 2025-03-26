@@ -28,7 +28,7 @@ const Auth = () => {
   }, [navigate]);
 
   return (
-    <AuthLayout defaultTab={defaultTab}>
+    <AuthLayout>
       <LoginForm />
       <SignupForm />
     </AuthLayout>

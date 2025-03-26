@@ -66,6 +66,10 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				gray: {
+					900: '#1a1a1a',
+					800: '#333333'
 				}
 			},
 			borderRadius: {
@@ -115,4 +119,17 @@ export default {
 		}
 	},
 	plugins: [require("tailwindcss-animate")],
+	safelist: [
+		'bg-white/70',
+		'bg-white/80',
+		'bg-gray-900/70',
+		'bg-gray-800/80',
+		'border-white/20',
+		'border-gray-800/30',
+		'bg-primary/5',
+		'bg-primary/10',
+		'bg-primary/20',
+		'bg-muted/50',
+		'bg-muted/30'
+	]
 } satisfies Config;

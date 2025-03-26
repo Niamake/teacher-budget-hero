@@ -1,4 +1,3 @@
-
 import { useEffect, useState } from 'react';
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,7 +27,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
-import { toast } from '@/components/ui/use-toast';
+import { toast } from '@/hooks/use-toast';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const formSchema = z.object({
@@ -123,8 +122,7 @@ const JobInfo = () => {
     localStorage.setItem('qppData', JSON.stringify(qppData));
     
     setIsSaved(true);
-    toast({
-      title: "Profile Saved",
+    toast("Profile Saved", {
       description: "Your career profile has been saved successfully."
     });
     
@@ -148,16 +146,13 @@ const JobInfo = () => {
       setNewPosition("");
       setNewYears("");
       
-      toast({
-        title: "History Added",
+      toast("History Added", {
         description: "Employment history entry has been added."
       });
     } catch (error) {
       if (error instanceof z.ZodError) {
-        toast({
-          title: "Validation Error",
-          description: "Please fill out all fields correctly.",
-          variant: "destructive"
+        toast.error("Validation Error", {
+          description: "Please fill out all fields correctly."
         });
       }
     }
@@ -169,8 +164,7 @@ const JobInfo = () => {
     setEmploymentHistory(updatedHistory);
     localStorage.setItem('employmentHistory', JSON.stringify(updatedHistory));
     
-    toast({
-      title: "Entry Removed",
+    toast("Entry Removed", {
       description: "Employment history entry has been removed."
     });
   };
