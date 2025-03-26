@@ -1,5 +1,9 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import './styles/animations.css';
+@import './styles/components.css';
+@import './styles/dark-mode.css';
+@import './styles/utilities.css';
 
 @tailwind base;
 @tailwind components;
@@ -131,102 +135,6 @@
   }
 }
 
-/* Glass morphism */
-@layer components {
-  .glass-morphism {
-    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
-  }
-
-  .dark .glass-morphism {
-    @apply bg-gray-900 bg-opacity-70 border-gray-800 border-opacity-30;
-  }
-
-  .glass-card {
-    @apply glass-morphism rounded-2xl transition-all duration-300;
-  }
-
-  .glass-button {
-    @apply glass-morphism rounded-full px-6 py-2 text-sm font-medium transition-all duration-200;
-  }
-
-  .glass-button:hover {
-    @apply bg-white/80 shadow-md;
-  }
-
-  .dark .glass-button:hover {
-    @apply bg-gray-800 bg-opacity-80;
-  }
-
-  .text-gradient {
-    @apply bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent;
-  }
-
-  .dark .text-gradient {
-    @apply from-blue-400 to-sky-300;
-  }
-}
-
-/* Enhanced animations */
-.page-transition-enter {
-  opacity: 0;
-  transform: translateY(10px);
-}
-
-.page-transition-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
-}
-
-.page-transition-exit {
-  opacity: 1;
-}
-
-.page-transition-exit-active {
-  opacity: 0;
-  transform: translateY(-10px);
-  transition: opacity 300ms, transform 300ms;
-}
-
-/* Improved scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  @apply bg-gray-300;
-  border-radius: 4px;
-}
-
-.dark ::-webkit-scrollbar-thumb {
-  @apply bg-gray-700;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-400;
-}
-
-.dark ::-webkit-scrollbar-thumb:hover {
-  @apply bg-gray-600;
-}
-
-/* Responsive image */
-.responsive-img {
-  @apply max-w-full h-auto;
-}
-
-/* Utility for visually hidden elements (for screen readers) */
-.sr-only {
-  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
-  clip: rect(0, 0, 0, 0);
-  clip-path: inset(50%);
-}
-
 /* Utility for reducing motion */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -235,74 +143,4 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
-}
-
-/* Fix issue with Sonner toast */
-.Toaster__toast {
-  @apply !rounded-lg !shadow-lg;
-}
-
-/* Fix for clipped shadows */
-.card-with-hover {
-  @apply transition-all duration-300 hover:shadow-xl z-10 relative;
-  transform: translate3d(0, 0, 0);
-}
-
-/* Improved focus outlines for keyboard navigation */
-.keyboard-focus:focus-visible {
-  @apply outline-none ring-2 ring-primary ring-offset-2;
-}
-
-/* Dark mode transitions */
-.dark * {
-  transition-property: background-color, border-color, color, fill, stroke;
-  transition-duration: 200ms;
-  transition-timing-function: ease-out;
-}
-
-/* Custom dark mode adjustments */
-.dark .bg-primary-5 {
-  @apply bg-primary bg-opacity-10;
-}
-
-.dark .bg-primary-10 {
-  @apply bg-primary bg-opacity-20;
-}
-
-/* Budget categories and UI */
-.budget-category {
-  @apply transition-all duration-200 hover:bg-muted hover:bg-opacity-50 rounded-lg;
-}
-
-.budget-category-header {
-  @apply flex items-center justify-between p-3 cursor-pointer;
-}
-
-.budget-category-content {
-  @apply p-3 space-y-2 rounded-lg bg-muted bg-opacity-30;
-}
-
-.budget-limit-warning {
-  @apply text-destructive font-medium text-sm mt-1;
-}
-
-.dark .budget-limit-warning {
-  @apply text-red-400;
-}
-
-.budget-limit-approaching {
-  @apply text-amber-500 font-medium text-sm mt-1;
-}
-
-.budget-within-limit {
-  @apply text-green-600 font-medium text-sm mt-1;
-}
-
-.dark .budget-within-limit {
-  @apply text-green-400;
-}
-
-/* Fix for destructive text in dark mode */
-.dark .text-destructive {
-  @apply text-red-400;
 }

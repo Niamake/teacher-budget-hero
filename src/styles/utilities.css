@@ -1,0 +1,55 @@
+
+/* Improved scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-300;
+  border-radius: 4px;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  @apply bg-gray-700;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-400;
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-600;
+}
+
+/* Responsive image */
+.responsive-img {
+  @apply max-w-full h-auto;
+}
+
+/* Utility for visually hidden elements (for screen readers) */
+.sr-only {
+  @apply absolute w-px h-px p-0 -m-px overflow-hidden whitespace-nowrap border-0;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+}
+
+/* Fix issue with Sonner toast */
+.Toaster__toast {
+  @apply !rounded-lg !shadow-lg;
+}
+
+/* Fix for clipped shadows */
+.card-with-hover {
+  @apply transition-all duration-300 hover:shadow-xl z-10 relative;
+  transform: translate3d(0, 0, 0);
+}
+
+/* Improved focus outlines for keyboard navigation */
+.keyboard-focus:focus-visible {
+  @apply outline-none ring-2 ring-primary ring-offset-2;
+}

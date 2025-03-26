@@ -1,0 +1,68 @@
+
+/* Glass morphism */
+@layer components {
+  .glass-morphism {
+    @apply bg-white/70 backdrop-blur-md border border-white/20 shadow-sm;
+  }
+
+  .dark .glass-morphism {
+    @apply bg-gray-900/70 border-gray-800/30;
+  }
+
+  .glass-card {
+    @apply glass-morphism rounded-2xl transition-all duration-300;
+  }
+
+  .glass-button {
+    @apply glass-morphism rounded-full px-6 py-2 text-sm font-medium transition-all duration-200;
+  }
+
+  .glass-button:hover {
+    @apply bg-white/80 shadow-md;
+  }
+
+  .dark .glass-button:hover {
+    @apply bg-gray-800/80;
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-blue-600 to-sky-400 bg-clip-text text-transparent;
+  }
+
+  .dark .text-gradient {
+    @apply from-blue-400 to-sky-300;
+  }
+}
+
+/* Budget categories and UI */
+.budget-category {
+  @apply transition-all duration-200 hover:bg-muted/50 rounded-lg;
+}
+
+.budget-category-header {
+  @apply flex items-center justify-between p-3 cursor-pointer;
+}
+
+.budget-category-content {
+  @apply p-3 space-y-2 rounded-lg bg-muted/30;
+}
+
+.budget-limit-warning {
+  @apply text-destructive font-medium text-sm mt-1;
+}
+
+.budget-limit-approaching {
+  @apply text-amber-500 font-medium text-sm mt-1;
+}
+
+.budget-within-limit {
+  @apply text-green-600 font-medium text-sm mt-1;
+}
+
+.dark .budget-limit-warning {
+  @apply text-red-400;
+}
+
+.dark .budget-within-limit {
+  @apply text-green-400;
+}
