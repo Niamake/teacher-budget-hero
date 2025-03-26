@@ -252,7 +252,7 @@ const DeferredCompSection = ({ savedData, onSave }: DeferredCompSectionProps) =>
                   ))}
                 </div>
                 
-                <div className="h-[475px] w-full">
+                <div className="h-[500px] w-full">
                   <ChartContainer
                     config={{
                       balance: {
