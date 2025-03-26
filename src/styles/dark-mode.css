@@ -1,4 +1,5 @@
 
+
 /* Dark mode transitions */
 .dark * {
   transition-property: background-color, border-color, color, fill, stroke;
@@ -11,15 +12,18 @@
   @apply bg-gray-900/70 border-gray-800/30;
 }
 
+/* Instead of using @apply with a modifier of the same class, 
+   define the style directly to avoid circular dependencies */
 .dark .bg-primary\/5 {
-  @apply bg-primary/10;
+  background-color: hsl(var(--primary) / 0.1);
 }
 
 .dark .bg-primary\/10 {
-  @apply bg-primary/20;
+  background-color: hsl(var(--primary) / 0.2);
 }
 
 /* Fix for destructive text in dark mode */
 .dark .text-destructive {
   @apply text-red-400;
 }
+
