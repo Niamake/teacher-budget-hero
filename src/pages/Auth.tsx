@@ -1,23 +1,21 @@
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import AuthLayout from '@/components/auth/AuthLayout';
 import LoginForm from '@/components/auth/LoginForm';
 import SignupForm from '@/components/auth/SignupForm';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const tabParam = searchParams.get('tab');
-  const defaultTab = tabParam === 'signup' ? 'signup' : 'login';
+  const { user } = useAuth();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') === 'signup' ? 'signup' : 'login');
 
   useEffect(() => {
-    // Check for redirect URL in localStorage
-    const redirectUrl = localStorage.getItem('redirectAfterAuth');
-    
     // If user is already authenticated, redirect them
-    const session = localStorage.getItem('sb-auth-token');
-    if (session) {
+    if (user) {
+      const redirectUrl = localStorage.getItem('redirectAfterAuth');
       if (redirectUrl) {
         localStorage.removeItem('redirectAfterAuth');
         navigate(redirectUrl);
@@ -25,7 +23,7 @@ const Auth = () => {
         navigate('/');
       }
     }
-  }, [navigate]);
+  }, [user, navigate]);
 
   return (
     <AuthLayout>

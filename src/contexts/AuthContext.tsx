@@ -23,6 +23,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       (_event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
+        
+        // When user signs in, check for redirect URL and navigate
+        if (session?.user) {
+          const redirectUrl = localStorage.getItem('redirectAfterAuth');
+          if (redirectUrl) {
+            // Use setTimeout to avoid executing during render
+            setTimeout(() => {
+              window.location.href = redirectUrl;
+              localStorage.removeItem('redirectAfterAuth');
+            }, 0);
+          }
+        }
+        
         setLoading(false);
       }
     );

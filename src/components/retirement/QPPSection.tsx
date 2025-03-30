@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -8,6 +7,7 @@ import { useState, useEffect } from "react";
 import { Shield, Clock, Calculator, Save } from "lucide-react";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
+import PensionCalculator from "./PensionCalculator";
 
 interface QPPFormValues {
   grossSalary: string;
@@ -57,13 +57,11 @@ const QPPSection = () => {
   });
 
   useEffect(() => {
-    // Load salary from teacher profile if available
     const teacherProfile = localStorage.getItem('teacherProfile');
     if (teacherProfile) {
       try {
         const profileData = JSON.parse(teacherProfile);
         
-        // Set pension tier from profile if available
         if (profileData.pensionTier) {
           setPensionTier(profileData.pensionTier);
           setCompletedMandatory(profileData.completedMandatory || false);
@@ -81,20 +79,17 @@ const QPPSection = () => {
       }
     }
 
-    // Load QPP data if available
     const qppData = localStorage.getItem('qppData');
     if (qppData) {
       try {
         const parsedData = JSON.parse(qppData);
         setCurrentBalance(parsedData.currentBalance || "");
         
-        // Set pension tier from QPP data if available
         if (parsedData.pensionTier) {
           setPensionTier(parsedData.pensionTier);
           setCompletedMandatory(parsedData.completedMandatory || false);
         }
         
-        // Calculate contribution based on current data
         updateContribution(form.getValues("grossSalary"));
       } catch (error) {
         console.error("Failed to parse QPP data:", error);
@@ -113,7 +108,6 @@ const QPPSection = () => {
   const onSubmit = (data: QPPFormValues) => {
     updateContribution(data.grossSalary);
     
-    // Save to localStorage
     const qppData = {
       currentBalance,
       pensionTier,
@@ -125,7 +119,6 @@ const QPPSection = () => {
     toast.success("Saved your QPP information");
   };
 
-  // When form values change, update the contribution calculation
   useEffect(() => {
     const subscription = form.watch((value) => {
       if (value.grossSalary) {
@@ -136,7 +129,6 @@ const QPPSection = () => {
     return () => subscription.unsubscribe();
   }, [form.watch, pensionTier, completedMandatory]);
 
-  // Format currency for display
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -281,6 +273,8 @@ const QPPSection = () => {
               )}
             </CardContent>
           </Card>
+          
+          <PensionCalculator />
         </CardContent>
       </Card>
     </div>
