@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import Header from '@/components/Header';
+import { Header } from '@/components/layout';
 import Footer from '@/components/Footer';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertTriangle, Calculator } from "lucide-react";

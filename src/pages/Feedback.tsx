@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { toast } from 'sonner';
-import Header from '@/components/Header';
+import { Header } from '@/components/layout';
 import Footer from '@/components/Footer';
 import { 
   Form, 

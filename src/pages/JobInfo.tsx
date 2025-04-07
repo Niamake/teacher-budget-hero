@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import { BriefcaseIcon } from 'lucide-react';
 
-import Header from '@/components/Header';
+import { Header } from '@/components/layout';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import JobForm from '@/components/job/JobForm';

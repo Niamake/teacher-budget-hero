@@ -1,6 +1,6 @@
 
 import { useEffect } from 'react';
-import Header from '@/components/Header';
+import { Header } from '@/components/layout';
 import Footer from '@/components/Footer';
 import { Separator } from '@/components/ui/separator';
 import { FileTextIcon } from 'lucide-react';

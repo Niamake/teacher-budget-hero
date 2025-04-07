@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import Header from '@/components/Header';
+import { Header } from '@/components/layout';
 import Footer from '@/components/Footer';
 import { BadgeDollarSign } from 'lucide-react';
 import SalaryEstimate from '@/components/budget/SalaryEstimate';
