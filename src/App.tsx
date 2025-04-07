@@ -13,6 +13,10 @@ import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
 import ProfilePage from './pages/Profile';
 import SettingsPage from './pages/Settings';
+import Support from './pages/Support';
+import Feedback from './pages/Feedback';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import TermsOfService from './pages/TermsOfService';
 import './App.css';
 
 function App() {
@@ -31,6 +35,11 @@ function App() {
             <Route path="/tax-estimate" element={<TaxEstimate />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/support" element={<Support />} />
+            <Route path="/support/faq" element={<Support />} />
+            <Route path="/feedback" element={<Feedback />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+            <Route path="/terms-of-service" element={<TermsOfService />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

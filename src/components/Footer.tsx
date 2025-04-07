@@ -1,3 +1,4 @@
+
 import { Link } from 'react-router-dom';
 
 const Footer = () => {
@@ -20,7 +21,7 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Features</h4>
             <ul className="space-y-2">
               <li>
-                <Link to="/budget" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/budgeting" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   Budget Management
                 </Link>
               </li>
@@ -39,6 +40,11 @@ const Footer = () => {
                   Tax Estimation
                 </Link>
               </li>
+              <li>
+                <Link to="/salary" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                  Salary
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -46,29 +52,21 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Resources</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
-                  Teacher Resources
-                </a>
+                <span className="text-sm text-foreground/50">Teacher Resources (Coming Soon)</span>
               </li>
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
-                  Financial Guides
-                </a>
+                <span className="text-sm text-foreground/50">Financial Guides (Coming Soon)</span>
               </li>
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
-                  Retirement Information
-                </a>
+                <span className="text-sm text-foreground/50">Retirement Information (Coming Soon)</span>
               </li>
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
-                  Tax Resources
-                </a>
+                <span className="text-sm text-foreground/50">Tax Resources (Coming Soon)</span>
               </li>
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/support/faq" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   FAQ
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -77,24 +75,24 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Contact</h4>
             <ul className="space-y-2">
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/support" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   Support
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/feedback" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   Feedback
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/privacy-policy" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   Privacy Policy
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                <Link to="/terms-of-service" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   Terms of Service
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
