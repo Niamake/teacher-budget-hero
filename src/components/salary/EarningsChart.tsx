@@ -1,4 +1,3 @@
-
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PerSessionEntry } from '@/types/perSession';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts';
@@ -32,7 +31,6 @@ const EarningsChart = ({ entries }: EarningsChartProps) => {
   const perSessionRate = getCurrentPerSessionRate();
   const monthlyData = calculateMonthlyEarnings(entries, perSessionRate);
   
-  // Filter data based on selected time range
   const filteredData = monthlyData.slice(-parseInt(timeRange));
   
   const totalEarnings = filteredData.reduce((sum, month) => sum + month.amount, 0);
@@ -112,10 +110,12 @@ const EarningsChart = ({ entries }: EarningsChartProps) => {
         )}
         
         <div className="bg-muted/50 p-4 rounded-md mt-4 text-sm">
-          <h4 className="font-semibold text-destructive mb-1">Important Tax Notice</h4>
+          <h4 className="font-semibold text-destructive mb-1">Important Tax Information</h4>
+          <p className="text-muted-foreground mb-2">
+            Per Session compensation submitted in quantities less than 20 hours may not have adequate tax withholding applied by the Department of Education. In such instances, you maintain responsibility for proper tax allocation and remittance during the applicable tax filing period.
+          </p>
           <p className="text-muted-foreground">
-            If you do not submit more than 20 hours of per session work at a time, you risk not having the DOE withhold taxes. 
-            You are responsible for withholding taxes yourself for when tax season comes along.
+            We are not tax specialists. For tax advice specific to your situation, please consult with a qualified accountant or tax specialist. For Per Session payments without appropriate withholding, we recommend reserving approximately 50% of the compensation in a High-Yield Savings Account to establish adequate financial reserves for potential tax obligations in the subsequent filing period.
           </p>
         </div>
       </CardContent>
