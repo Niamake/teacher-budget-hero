@@ -1,6 +1,5 @@
-
 import { useEffect, lazy, Suspense } from 'react';
-import Header from '@/components/Header';
+import Header from '@/components/layout/header/Header';
 import { Skeleton } from '@/components/ui/skeleton';
 
 // Lazy load components for better performance
