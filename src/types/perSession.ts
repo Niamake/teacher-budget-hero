@@ -8,6 +8,7 @@ export interface PerSessionBudget {
   timeframe: TimeframeType;
   notes?: string;
   createdAt: string;
+  endDate?: string; // Added end date for timeframe
 }
 
 export interface PerSessionEntry {

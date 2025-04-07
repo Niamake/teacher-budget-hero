@@ -88,3 +88,9 @@ export const calculateUsagePercentage = (
   const totalHours = calculateTotalHours(budget, entries);
   return (totalHours / budget.hours) * 100;
 };
+
+// Format date for display
+export const formatBudgetDate = (dateString?: string): string => {
+  if (!dateString) return 'No end date set';
+  return format(parseISO(dateString), 'PPP');
+};

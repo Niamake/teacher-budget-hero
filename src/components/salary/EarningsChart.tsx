@@ -1,3 +1,4 @@
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { PerSessionEntry } from '@/types/perSession';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, TooltipProps } from 'recharts';
@@ -6,6 +7,7 @@ import { getCurrentPerSessionRate } from '@/utils/taxCalculations';
 import { formatCurrency } from '@/utils/taxCalculations';
 import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 interface EarningsChartProps {
   entries: PerSessionEntry[];
@@ -37,6 +39,18 @@ const EarningsChart = ({ entries }: EarningsChartProps) => {
 
   return (
     <Card className="col-span-full">
+      <Alert variant="destructive" className="mb-4">
+        <AlertTitle className="text-destructive font-semibold">Important Tax Information</AlertTitle>
+        <AlertDescription className="text-sm">
+          <p className="mb-2">
+            Per Session compensation submitted in quantities less than 20 hours may not have adequate tax withholding applied by the Department of Education. In such instances, you maintain responsibility for proper tax allocation and remittance during the applicable tax filing period.
+          </p>
+          <p>
+            We are not tax specialists. For tax advice specific to your situation, please consult with a qualified accountant or tax specialist. For Per Session payments without appropriate withholding, we recommend reserving approximately 50% of the compensation in a High-Yield Savings Account to establish adequate financial reserves for potential tax obligations in the subsequent filing period.
+          </p>
+        </AlertDescription>
+      </Alert>
+      
       <CardHeader>
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
@@ -108,16 +122,6 @@ const EarningsChart = ({ entries }: EarningsChartProps) => {
             No earnings data available. Start logging your hours!
           </div>
         )}
-        
-        <div className="bg-muted/50 p-4 rounded-md mt-4 text-sm">
-          <h4 className="font-semibold text-destructive mb-1">Important Tax Information</h4>
-          <p className="text-muted-foreground mb-2">
-            Per Session compensation submitted in quantities less than 20 hours may not have adequate tax withholding applied by the Department of Education. In such instances, you maintain responsibility for proper tax allocation and remittance during the applicable tax filing period.
-          </p>
-          <p className="text-muted-foreground">
-            We are not tax specialists. For tax advice specific to your situation, please consult with a qualified accountant or tax specialist. For Per Session payments without appropriate withholding, we recommend reserving approximately 50% of the compensation in a High-Yield Savings Account to establish adequate financial reserves for potential tax obligations in the subsequent filing period.
-          </p>
-        </div>
       </CardContent>
     </Card>
   );

@@ -6,10 +6,13 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PlusCircle } from 'lucide-react';
+import { PlusCircle, Calendar } from 'lucide-react';
 import { PerSessionBudget, TimeframeType } from '@/types/perSession';
 import { generateId } from '@/utils/perSessionUtils';
 import { toast } from 'sonner';
+import { format } from 'date-fns';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 
 interface BudgetFormProps {
   onAddBudget: (budget: PerSessionBudget) => void;
@@ -20,6 +23,7 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
   const [hours, setHours] = useState('');
   const [timeframe, setTimeframe] = useState<TimeframeType>('monthly');
   const [notes, setNotes] = useState('');
+  const [date, setDate] = useState<Date | undefined>(undefined);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,6 +39,7 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
       hours: Number(hours),
       timeframe,
       notes,
+      endDate: date ? format(date, 'yyyy-MM-dd') : undefined,
       createdAt: new Date().toISOString(),
     };
     
@@ -45,6 +50,7 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
     setHours('');
     setTimeframe('monthly');
     setNotes('');
+    setDate(undefined);
     
     toast.success('Budget added successfully');
   };
@@ -100,6 +106,31 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          
+          <div className="space-y-2">
+            <Label htmlFor="endDate">End Date (Optional)</Label>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button 
+                  variant="outline" 
+                  className="w-full justify-start text-left font-normal"
+                  id="endDate"
+                >
+                  <Calendar className="mr-2 h-4 w-4" />
+                  {date ? format(date, 'PPP') : <span>Pick an end date</span>}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0">
+                <CalendarComponent
+                  mode="single"
+                  selected={date}
+                  onSelect={setDate}
+                  initialFocus
+                />
+              </PopoverContent>
+            </Popover>
+            <p className="text-xs text-muted-foreground">Set an end date for this budget timeframe</p>
           </div>
           
           <div className="space-y-2">

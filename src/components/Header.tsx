@@ -1,5 +1,6 @@
+
 import { useState, useEffect } from 'react';
-import { Menu, X, UserCircle, LogOut, Settings, Sun, Moon } from 'lucide-react';
+import { Menu, X, UserCircle, LogOut, Settings, Sun, Moon, BadgeDollarSign, Clock } from 'lucide-react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,6 +11,8 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from 'sonner';
@@ -23,11 +26,19 @@ const Header = () => {
   const { theme, toggleTheme } = useTheme();
 
   const navItems = [
-    { name: 'Salary', path: '/salary' },
-    { name: 'Budget Management', path: '/budgeting' },
-    { name: 'Job Information', path: '/job-info' },
-    { name: 'Retirement', path: '/retirement' },
-    { name: 'Tax Estimate', path: '/tax-estimate' },
+    { 
+      name: 'Salary', 
+      path: '/salary',
+      hasDropdown: true,
+      dropdownItems: [
+        { name: 'Salary Management', path: '/salary' },
+        { name: 'Per Session Hours', path: '/per-session-hours' }
+      ]
+    },
+    { name: 'Budget Management', path: '/budgeting', hasDropdown: false },
+    { name: 'Job Information', path: '/job-info', hasDropdown: false },
+    { name: 'Retirement', path: '/retirement', hasDropdown: false },
+    { name: 'Tax Estimate', path: '/tax-estimate', hasDropdown: false },
   ];
 
   useEffect(() => {
@@ -92,6 +103,15 @@ const Header = () => {
     closeMobileMenu();
   };
   
+  const isPathActive = (path) => {
+    return location.pathname === path || location.pathname.startsWith(`${path}/`);
+  };
+  
+  const isDropdownActive = (item) => {
+    if (!item.hasDropdown) return false;
+    return item.dropdownItems.some(subItem => isPathActive(subItem.path));
+  };
+  
   return (
     <header 
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -114,17 +134,52 @@ const Header = () => {
 
           <nav className="hidden md:flex items-center space-x-6">
             {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={`text-sm font-medium transition-all duration-200 hover:text-primary ${
-                  location.pathname === item.path
-                    ? 'text-primary'
-                    : 'text-foreground/80'
-                }`}
-              >
-                {item.name}
-              </Link>
+              item.hasDropdown ? (
+                <DropdownMenu key={item.path}>
+                  <DropdownMenuTrigger asChild>
+                    <button
+                      className={`text-sm font-medium transition-all duration-200 hover:text-primary flex items-center ${
+                        isPathActive(item.path) || isDropdownActive(item)
+                          ? 'text-primary'
+                          : 'text-foreground/80'
+                      }`}
+                    >
+                      {item.name}
+                      <svg className="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="center" className="w-48">
+                    {item.dropdownItems.map((subItem) => (
+                      <DropdownMenuItem key={subItem.path} asChild>
+                        <Link
+                          to={subItem.path}
+                          className={`w-full cursor-pointer ${
+                            isPathActive(subItem.path) ? 'text-primary' : ''
+                          }`}
+                        >
+                          {subItem.name === 'Salary Management' && <BadgeDollarSign className="mr-2 h-4 w-4" />}
+                          {subItem.name === 'Per Session Hours' && <Clock className="mr-2 h-4 w-4" />}
+                          {subItem.name}
+                        </Link>
+                      </DropdownMenuItem>
+                    ))}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={`text-sm font-medium transition-all duration-200 hover:text-primary ${
+                    isPathActive(item.path)
+                      ? 'text-primary'
+                      : 'text-foreground/80'
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              )
             ))}
           </nav>
 
@@ -220,18 +275,42 @@ const Header = () => {
       >
         <nav className="flex flex-col space-y-6 py-8">
           {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={`text-lg font-medium transition-all duration-200 ${
-                location.pathname === item.path
-                  ? 'text-primary'
-                  : 'text-foreground/80'
-              }`}
-              onClick={closeMobileMenu}
-            >
-              {item.name}
-            </Link>
+            item.hasDropdown ? (
+              <div key={item.path} className="space-y-2">
+                <div className="text-lg font-medium text-foreground/80">{item.name}</div>
+                <div className="pl-4 space-y-2 border-l border-border">
+                  {item.dropdownItems.map((subItem) => (
+                    <Link
+                      key={subItem.path}
+                      to={subItem.path}
+                      className={`flex items-center text-sm ${
+                        isPathActive(subItem.path)
+                          ? 'text-primary'
+                          : 'text-foreground/80'
+                      }`}
+                      onClick={closeMobileMenu}
+                    >
+                      {subItem.name === 'Salary Management' && <BadgeDollarSign className="mr-2 h-4 w-4" />}
+                      {subItem.name === 'Per Session Hours' && <Clock className="mr-2 h-4 w-4" />}
+                      {subItem.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <Link
+                key={item.path}
+                to={item.path}
+                className={`text-lg font-medium transition-all duration-200 ${
+                  isPathActive(item.path)
+                    ? 'text-primary'
+                    : 'text-foreground/80'
+                }`}
+                onClick={closeMobileMenu}
+              >
+                {item.name}
+              </Link>
+            )
           ))}
           <hr className="border-border my-4" />
           
