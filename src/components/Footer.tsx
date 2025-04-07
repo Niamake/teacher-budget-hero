@@ -21,6 +21,11 @@ const Footer = () => {
             <h4 className="font-semibold mb-4">Features</h4>
             <ul className="space-y-2">
               <li>
+                <Link to="/salary" className="text-sm text-foreground/70 hover:text-primary transition-colors">
+                  Salary Management
+                </Link>
+              </li>
+              <li>
                 <Link to="/budgeting" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   Budget Management
                 </Link>
@@ -38,11 +43,6 @@ const Footer = () => {
               <li>
                 <Link to="/tax-estimate" className="text-sm text-foreground/70 hover:text-primary transition-colors">
                   Tax Estimation
-                </Link>
-              </li>
-              <li>
-                <Link to="/salary" className="text-sm text-foreground/70 hover:text-primary transition-colors">
-                  Salary
                 </Link>
               </li>
             </ul>

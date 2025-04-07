@@ -17,6 +17,7 @@ import Support from './pages/Support';
 import Feedback from './pages/Feedback';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import TermsOfService from './pages/TermsOfService';
+import PerSessionHours from './pages/PerSessionHours';
 import './App.css';
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/salary" element={<Salary />} />
+            <Route path="/per-session-hours" element={<PerSessionHours />} />
             <Route path="/budgeting" element={<Budgeting />} />
             <Route path="/job-info" element={<JobInfo />} />
             <Route path="/retirement" element={<Retirement />} />

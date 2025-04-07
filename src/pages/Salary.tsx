@@ -2,7 +2,7 @@
 import { useEffect, useState } from 'react';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import { BadgeDollarSign } from 'lucide-react';
+import { BadgeDollarSign, Clock } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import SalaryEstimate from '@/components/budget/SalaryEstimate';
 import BudgetTools from '@/components/budget/BudgetTools';
 import ProfileNeeded from '@/components/budget/ProfileNeeded';
 import { formatCurrency, getCurrentPerSessionRate } from '@/utils/taxCalculations';
+import { Link } from 'react-router-dom';
 
 const Salary = () => {
   const navigate = useNavigate();
@@ -146,14 +147,27 @@ const Salary = () => {
                     
                     <div className="space-y-2">
                       <Label htmlFor="per-session-hours">Per Session Hours</Label>
-                      <div className="relative">
-                        <Input
-                          id="per-session-hours"
-                          type="number"
-                          placeholder="0"
-                          value={perSessionHours}
-                          onChange={(e) => handlePerSessionHoursChange(e.target.value)}
-                        />
+                      <div className="flex items-center gap-2">
+                        <div className="relative flex-grow">
+                          <Input
+                            id="per-session-hours"
+                            type="number"
+                            placeholder="0"
+                            value={perSessionHours}
+                            onChange={(e) => handlePerSessionHoursChange(e.target.value)}
+                          />
+                        </div>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          asChild
+                          className="whitespace-nowrap"
+                        >
+                          <Link to="/per-session-hours">
+                            <Clock className="mr-2 h-4 w-4" />
+                            Track Hours
+                          </Link>
+                        </Button>
                       </div>
                       <div className="flex justify-between">
                         <p className="text-xs text-muted-foreground">Current rate: ${perSessionRate.toFixed(2)}/hour</p>
@@ -162,6 +176,21 @@ const Salary = () => {
                         )}
                       </div>
                     </div>
+                  </div>
+                  
+                  <div className="bg-muted/50 p-4 rounded-lg border border-border/50">
+                    <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                      <Clock className="h-4 w-4 text-primary" />
+                      Per Session Hours Tracking
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-3">
+                      Track your per session hours in detail, set budgets, and visualize your earnings over time.
+                    </p>
+                    <Button asChild>
+                      <Link to="/per-session-hours">
+                        Go to Per Session Hours Tracker
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>
