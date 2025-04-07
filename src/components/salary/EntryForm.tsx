@@ -12,7 +12,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { CalendarIcon, Clock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { PerSessionBudget, PerSessionEntry } from '@/types/perSession';
-import { generateId } from '@/utils/perSessionUtils';
+import { generateId, getTimeframeLabel } from '@/utils/perSessionUtils';
 import { toast } from 'sonner';
 
 interface EntryFormProps {
