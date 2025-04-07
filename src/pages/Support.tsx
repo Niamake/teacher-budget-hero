@@ -4,7 +4,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { LifebuoyIcon, MessageSquareIcon } from 'lucide-react';
+import { LifeBuoyIcon, MessageSquareIcon } from 'lucide-react';
 
 const Support = () => {
   const [activeTab, setActiveTab] = useState('help');
@@ -49,7 +49,7 @@ const Support = () => {
           <Tabs defaultValue="help" value={activeTab} onValueChange={setActiveTab} className="w-full mb-8">
             <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="help" className="flex items-center gap-2">
-                <LifebuoyIcon className="h-4 w-4" />
+                <LifeBuoyIcon className="h-4 w-4" />
                 <span>Help Center</span>
               </TabsTrigger>
               <TabsTrigger value="contact" className="flex items-center gap-2">
