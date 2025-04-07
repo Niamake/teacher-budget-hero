@@ -43,10 +43,10 @@ const EarningsChart = ({ entries }: EarningsChartProps) => {
         <AlertTitle className="text-destructive font-semibold">Important Tax Information</AlertTitle>
         <AlertDescription className="text-sm">
           <p className="mb-2">
-            Per Session compensation submitted in quantities less than 20 hours may not have adequate tax withholding applied by the Department of Education. In such instances, you maintain responsibility for proper tax allocation and remittance during the applicable tax filing period.
+            When submitting less than 20 hours of Per Session work at once, the Department of Education may not withhold enough taxes from your payment. You are responsible for setting aside money for taxes in this case.
           </p>
           <p>
-            We are not tax specialists. For tax advice specific to your situation, please consult with a qualified accountant or tax specialist. For Per Session payments without appropriate withholding, we recommend reserving approximately 50% of the compensation in a High-Yield Savings Account to establish adequate financial reserves for potential tax obligations in the subsequent filing period.
+            We are not tax specialists. Please consult a qualified tax professional for advice on your specific situation. We recommend saving about 50% of any Per Session payment without proper tax withholding in a High-Yield Savings Account to cover potential tax obligations in the next filing period.
           </p>
         </AlertDescription>
       </Alert>
