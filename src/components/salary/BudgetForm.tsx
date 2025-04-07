@@ -28,8 +28,12 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!name || !hours) {
-      toast.error('Please fill in all required fields');
+    if (!name || !hours || !date) {
+      toast.error(
+        !date 
+          ? 'Please select an end date for this budget' 
+          : 'Please fill in all required fields'
+      );
       return;
     }
     
@@ -39,7 +43,7 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
       hours: Number(hours),
       timeframe,
       notes,
-      endDate: date ? format(date, 'yyyy-MM-dd') : undefined,
+      endDate: format(date, 'yyyy-MM-dd'),
       createdAt: new Date().toISOString(),
     };
     
@@ -109,7 +113,9 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
           </div>
           
           <div className="space-y-2">
-            <Label htmlFor="endDate">End Date (Optional)</Label>
+            <Label htmlFor="endDate" className="flex items-center gap-1">
+              End Date <span className="text-destructive">*</span>
+            </Label>
             <Popover>
               <PopoverTrigger asChild>
                 <Button 
@@ -127,10 +133,11 @@ const BudgetForm = ({ onAddBudget }: BudgetFormProps) => {
                   selected={date}
                   onSelect={setDate}
                   initialFocus
+                  className="p-3 pointer-events-auto"
                 />
               </PopoverContent>
             </Popover>
-            <p className="text-xs text-muted-foreground">Set an end date for this budget timeframe</p>
+            <p className="text-xs text-muted-foreground">Set the end date for this budget timeframe</p>
           </div>
           
           <div className="space-y-2">

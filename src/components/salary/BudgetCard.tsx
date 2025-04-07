@@ -9,7 +9,8 @@ import {
 } from '@/components/ui/card';
 import { PerSessionBudget, PerSessionEntry } from '@/types/perSession';
 import { Progress } from '@/components/ui/progress';
-import { calculateRemainingHours, calculateUsagePercentage, getTimeframeLabel } from '@/utils/perSessionUtils';
+import { calculateRemainingHours, calculateUsagePercentage, getTimeframeLabel, formatBudgetDate } from '@/utils/perSessionUtils';
+import { Calendar } from 'lucide-react';
 
 interface BudgetCardProps {
   budget: PerSessionBudget;
@@ -61,6 +62,11 @@ const BudgetCard = ({ budget, entries, onDelete }: BudgetCardProps) => {
             <span className="font-medium">
               {Math.min(usagePercentage, 100).toFixed(0)}% used
             </span>
+          </div>
+
+          <div className="flex items-center text-xs text-muted-foreground gap-1">
+            <Calendar className="h-3.5 w-3.5" />
+            <span>Ends: {formatBudgetDate(budget.endDate)}</span>
           </div>
           
           {budget.notes && (

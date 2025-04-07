@@ -1,4 +1,5 @@
 
+
 export type TimeframeType = 'weekly' | 'monthly' | 'semester' | 'yearly';
 
 export interface PerSessionBudget {
@@ -8,7 +9,7 @@ export interface PerSessionBudget {
   timeframe: TimeframeType;
   notes?: string;
   createdAt: string;
-  endDate?: string; // Added end date for timeframe
+  endDate: string; // No longer optional
 }
 
 export interface PerSessionEntry {
