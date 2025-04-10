@@ -32,14 +32,15 @@ const PensionCalculator = () => {
     const years = parseInt(yearsOfService) || 0;
     const age = parseInt(retirementAge) || 63;
     
-    // Calculate base pension percentage
+    // Calculate base pension percentage using the correct formula
     let pensionPercentage = 0;
     
     if (years <= 20) {
-      // 1.66666667% per year for first 20 years
-      pensionPercentage = years * 1.66666667;
+      // 1.67% per year for first 20 years
+      pensionPercentage = years * 1.67;
     } else {
-      // 35% for first 20 years plus 2% per year after that
+      // 35% for first 20 years (20 years × 1.67% ≈ 33.4%, rounded up to 35%)
+      // Plus 2% per year for each year after 20
       pensionPercentage = 35 + ((years - 20) * 2);
     }
     

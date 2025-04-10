@@ -3,9 +3,11 @@ import { useState, useEffect } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Hero = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -15,6 +17,16 @@ const Hero = () => {
 
     return () => clearTimeout(timer);
   }, []);
+
+  const handleGetStarted = () => {
+    if (user) {
+      // If logged in, navigate to Job Information page
+      navigate('/job-info');
+    } else {
+      // If not logged in, navigate to auth page
+      navigate('/auth');
+    }
+  };
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20 pb-16">
@@ -46,7 +58,7 @@ const Hero = () => {
             <Button 
               size="lg" 
               className="w-full sm:w-auto text-base font-medium px-8 py-6 bg-primary hover:bg-primary/90 shadow-lg hover:shadow-xl transition-all duration-300"
-              onClick={() => navigate('/auth')}
+              onClick={handleGetStarted}
             >
               Get Started
               <ArrowRight className="ml-2 h-5 w-5" />
