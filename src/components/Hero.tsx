@@ -78,7 +78,7 @@ const Hero = () => {
             </Button>
           </div>
 
-          <div className={`mt-20 grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-8 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100' : 'opacity-0 transform translate-y-8'}`}>
+          <div className={`mt-20 grid grid-cols-2 md:grid-cols-5 gap-x-4 md:gap-x-6 gap-y-6 md:gap-y-8 transition-all duration-1000 delay-900 ${isVisible ? 'opacity-100' : 'opacity-0 transform translate-y-8'}`}>
             <div className="flex flex-col items-center">
               <div className="text-3xl font-bold text-primary">100%</div>
               <p className="text-sm text-foreground/60 mt-2">NYC Teacher Focused</p>
